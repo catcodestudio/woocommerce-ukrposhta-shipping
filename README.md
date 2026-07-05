@@ -1,5 +1,7 @@
 # Ukrposhta Shipping for WooCommerce
 
+<p align="center"><img src="docs/cover.png" width="380" alt="Ukrposhta Shipping for WooCommerce"></p>
+
 Ukrposhta (Укрпошта) shipping for **WooCommerce** — an in-checkout post-office picker backed by the official Ukrposhta Address Classifier, plus live domestic tariff calculation.
 
 > **Scope of this release (1.0.0):** checkout picker + tariff. Shipment (barcode/ТТН) creation, sticker printing and cash-on-delivery are on the roadmap for a later update once verified end-to-end against a live contract.
@@ -26,6 +28,16 @@ Ukrposhta (Укрпошта) shipping for **WooCommerce** — an in-checkout pos
 4. The post-office picker appears on the (classic) checkout.
 
 > The picker targets the **classic** checkout. Order meta is also captured on the Store API (block) checkout path; a native block integration is planned.
+
+## Screenshots
+
+**Checkout — post-office picker (region → city → office)**
+
+![Checkout picker](docs/checkout.png)
+
+**Admin — shipping method settings**
+
+![Method settings](docs/admin.png)
 
 ## Licence
 
