@@ -1,7 +1,7 @@
 === Ukrposhta Shipping for WooCommerce ===
 Contributors: catcodestudio
 Tags: woocommerce, shipping, ukrposhta, ukraine, delivery
-Requires at least: 6.2
+Requires at least: 5.6
 Tested up to: 6.7
 Requires PHP: 7.4
 Stable tag: 1.0.0

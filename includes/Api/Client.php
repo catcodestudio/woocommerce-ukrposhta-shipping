@@ -239,7 +239,7 @@ class Client {
 			$parcel['declaredPrice'] = (float) $args['declaredPrice'];
 		}
 		if ( ! empty( $args['description'] ) ) {
-			$parcel['description'] = mb_substr( (string) $args['description'], 0, 120 );
+			$parcel['description'] = function_exists( 'mb_substr' ) ? mb_substr( (string) $args['description'], 0, 120 ) : substr( (string) $args['description'], 0, 120 );
 		}
 
 		$body = array(

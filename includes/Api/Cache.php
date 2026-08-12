@@ -43,10 +43,10 @@ class Cache {
 
 	public static function cities( Client $client, string $region_id, string $query ): array {
 		$query = trim( $query );
-		if ( '' === $region_id || mb_strlen( $query ) < 2 ) {
+		if ( '' === $region_id || ( function_exists( 'mb_strlen' ) ? mb_strlen( $query ) : strlen( $query ) ) < 2 ) {
 			return array();
 		}
-		$key    = 'upwc_cities_' . md5( $region_id . '|' . mb_strtolower( $query ) );
+		$key    = 'upwc_cities_' . md5( $region_id . '|' . ( function_exists( 'mb_strtolower' ) ? mb_strtolower( $query ) : strtolower( $query ) ) );
 		$cached = get_transient( $key );
 		if ( is_array( $cached ) ) {
 			return $cached;
