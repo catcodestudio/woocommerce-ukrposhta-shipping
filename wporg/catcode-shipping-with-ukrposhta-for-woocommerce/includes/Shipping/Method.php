@@ -19,8 +19,8 @@ class Method extends \WC_Shipping_Method {
 	public function __construct( $instance_id = 0 ) {
 		$this->id                 = 'ukrposhta';
 		$this->instance_id        = absint( $instance_id );
-		$this->method_title       = __( 'Ukrposhta', 'ukrposhta-shipping-for-woocommerce' );
-		$this->method_description = __( 'Ukrposhta delivery: the customer picks a post office at checkout (region -> city -> office) and the tariff is quoted live.', 'ukrposhta-shipping-for-woocommerce' );
+		$this->method_title       = __( 'Ukrposhta', 'catcode-shipping-with-ukrposhta-for-woocommerce' );
+		$this->method_description = __( 'Ukrposhta delivery: the customer picks a post office at checkout (region -> city -> office) and the tariff is quoted live.', 'catcode-shipping-with-ukrposhta-for-woocommerce' );
 		$this->supports           = array( 'shipping-zones', 'instance-settings', 'settings' );
 
 		$this->init();
@@ -30,7 +30,7 @@ class Method extends \WC_Shipping_Method {
 		$this->init_form_fields();
 		$this->init_settings();
 
-		$this->title   = $this->get_option( 'title', __( 'Ukrposhta', 'ukrposhta-shipping-for-woocommerce' ) );
+		$this->title   = $this->get_option( 'title', __( 'Ukrposhta', 'catcode-shipping-with-ukrposhta-for-woocommerce' ) );
 		$this->enabled = $this->get_option( 'enabled', 'yes' );
 
 		add_action( 'woocommerce_update_options_shipping_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -39,70 +39,70 @@ class Method extends \WC_Shipping_Method {
 	public function init_form_fields(): void {
 		$this->form_fields = array(
 			'enabled'          => array(
-				'title'   => __( 'Enable', 'ukrposhta-shipping-for-woocommerce' ),
+				'title'   => __( 'Enable', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Show Ukrposhta at checkout', 'ukrposhta-shipping-for-woocommerce' ),
+				'label'   => __( 'Show Ukrposhta at checkout', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'default' => 'yes',
 			),
 			'title'            => array(
-				'title'   => __( 'Method title', 'ukrposhta-shipping-for-woocommerce' ),
+				'title'   => __( 'Method title', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'type'    => 'text',
-				'default' => __( 'Ukrposhta - delivery to a post office', 'ukrposhta-shipping-for-woocommerce' ),
+				'default' => __( 'Ukrposhta - delivery to a post office', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 			),
 			'sandbox'          => array(
-				'title'   => __( 'Test environment', 'ukrposhta-shipping-for-woocommerce' ),
+				'title'   => __( 'Test environment', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Sandbox (dev.ukrposhta.ua)', 'ukrposhta-shipping-for-woocommerce' ),
+				'label'   => __( 'Sandbox (dev.ukrposhta.ua)', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'default' => 'no',
 			),
 			'bearer'           => array(
-				'title'       => __( 'Bearer eCom', 'ukrposhta-shipping-for-woocommerce' ),
+				'title'       => __( 'Bearer eCom', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'type'        => 'password',
-				'description' => __( 'Issued by Ukrposhta once your eCom contract is signed. Needed for both the address classifier and the tariff. Stored encrypted. Leave empty to keep the current key.', 'ukrposhta-shipping-for-woocommerce' ),
+				'description' => __( 'Issued by Ukrposhta once your eCom contract is signed. Needed for both the address classifier and the tariff. Stored encrypted. Leave empty to keep the current key.', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'default'     => '',
 			),
 			'sender_postcode'  => array(
-				'title'       => __( 'Sender post index', 'ukrposhta-shipping-for-woocommerce' ),
+				'title'       => __( 'Sender post index', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'type'        => 'text',
-				'description' => __( 'Post index the parcels are sent from. Required for the tariff.', 'ukrposhta-shipping-for-woocommerce' ),
+				'description' => __( 'Post index the parcels are sent from. Required for the tariff.', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'default'     => '',
 			),
 			'service_type'     => array(
-				'title'   => __( 'Service type', 'ukrposhta-shipping-for-woocommerce' ),
+				'title'   => __( 'Service type', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'type'    => 'select',
 				'options' => array(
-					'STANDARD' => __( 'Ukrposhta Standard', 'ukrposhta-shipping-for-woocommerce' ),
-					'EXPRESS'  => __( 'Ukrposhta Express', 'ukrposhta-shipping-for-woocommerce' ),
+					'STANDARD' => __( 'Ukrposhta Standard', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+					'EXPRESS'  => __( 'Ukrposhta Express', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				),
 				'default' => 'STANDARD',
 			),
 			'default_cost'     => array(
-				'title'       => __( 'Fallback rate, UAH', 'ukrposhta-shipping-for-woocommerce' ),
+				'title'       => __( 'Fallback rate, UAH', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'type'        => 'text',
-				'description' => __( 'Used when the API is unreachable or no recipient index has been chosen yet.', 'ukrposhta-shipping-for-woocommerce' ),
+				'description' => __( 'Used when the API is unreachable or no recipient index has been chosen yet.', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'default'     => '65',
 			),
 			'free_over'        => array(
-				'title'       => __( 'Free shipping from, UAH', 'ukrposhta-shipping-for-woocommerce' ),
+				'title'       => __( 'Free shipping from, UAH', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'type'        => 'text',
-				'description' => __( '0 disables it.', 'ukrposhta-shipping-for-woocommerce' ),
+				'description' => __( '0 disables it.', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'default'     => '0',
 			),
 			'declared_value'   => array(
-				'title'       => __( 'Declared value', 'ukrposhta-shipping-for-woocommerce' ),
+				'title'       => __( 'Declared value', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'type'        => 'checkbox',
-				'label'       => __( 'Send the order total as the declared value', 'ukrposhta-shipping-for-woocommerce' ),
-				'description' => __( 'Ukrposhta charges a percentage for this: the quote gets higher, but the parcel is insured.', 'ukrposhta-shipping-for-woocommerce' ),
+				'label'       => __( 'Send the order total as the declared value', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+				'description' => __( 'Ukrposhta charges a percentage for this: the quote gets higher, but the parcel is insured.', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'default'     => 'yes',
 			),
 			'cod_gateways'     => array(
-				'title'       => __( 'Cash-on-delivery payment methods', 'ukrposhta-shipping-for-woocommerce' ),
+				'title'       => __( 'Cash-on-delivery payment methods', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'type'        => 'text',
-				'description' => __( 'Comma-separated payment method IDs. For these the Ukrposhta cash-on-delivery commission is added to the tariff. The standard WooCommerce method is <code>cod</code>.', 'ukrposhta-shipping-for-woocommerce' ),
+				'description' => __( 'Comma-separated payment method IDs. For these the Ukrposhta cash-on-delivery commission is added to the tariff. The standard WooCommerce method is <code>cod</code>.', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'default'     => 'cod',
 			),
 			'accent_color'     => array(
-				'title'   => __( 'Widget accent colour', 'ukrposhta-shipping-for-woocommerce' ),
+				'title'   => __( 'Widget accent colour', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 				'type'    => 'color',
 				'default' => '#374151',
 			),

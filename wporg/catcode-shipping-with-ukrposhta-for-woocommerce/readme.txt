@@ -1,4 +1,4 @@
-=== Ukrposhta Shipping for WooCommerce ===
+=== CatCode Shipping with Ukrposhta for WooCommerce ===
 Contributors: catcodestudio
 Tags: woocommerce, shipping, ukrposhta, ukraine, delivery
 Requires at least: 5.6
@@ -12,7 +12,7 @@ Ukrposhta (Укрпошта) shipping for WooCommerce — post office picker at 
 
 == Description ==
 
-Ukrposhta Shipping for WooCommerce integrates the official Ukrposhta (Укрпошта) API into your store:
+CatCode Shipping with Ukrposhta for WooCommerce integrates the official Ukrposhta (Укрпошта) API into your store:
 
 * **Checkout picker** — customers choose region → city → post office, backed by the official Ukrposhta Address Classifier. The selected post index is stored on the order.
 * **Live tariff** — domestic delivery price is fetched from the Ukrposhta eCom API (`/domestic/delivery-price`); a configurable flat rate is used as fallback. Optional free shipping over a threshold.

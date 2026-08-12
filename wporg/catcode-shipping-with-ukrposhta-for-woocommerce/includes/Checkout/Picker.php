@@ -83,23 +83,23 @@ class Picker {
 	 */
 	private static function widget_strings(): array {
 		return array(
-			'title'          => __( 'Ukrposhta delivery', 'ukrposhta-shipping-for-woocommerce' ),
-			'region'         => __( 'Region', 'ukrposhta-shipping-for-woocommerce' ),
-			'regionPh'       => __( 'Choose a region…', 'ukrposhta-shipping-for-woocommerce' ),
-			'city'           => __( 'City', 'ukrposhta-shipping-for-woocommerce' ),
-			'cityPh'         => __( 'Choose a region first', 'ukrposhta-shipping-for-woocommerce' ),
-			'cityReady'      => __( 'Start typing the name…', 'ukrposhta-shipping-for-woocommerce' ),
-			'office'         => __( 'Post office', 'ukrposhta-shipping-for-woocommerce' ),
-			'officePh'       => __( 'Choose a city first', 'ukrposhta-shipping-for-woocommerce' ),
-			'officeReady'    => __( 'Pick a post office or an index…', 'ukrposhta-shipping-for-woocommerce' ),
-			'searching'      => __( 'Searching…', 'ukrposhta-shipping-for-woocommerce' ),
-			'loading'        => __( 'Loading…', 'ukrposhta-shipping-for-woocommerce' ),
-			'loadingRegions' => __( 'Loading regions…', 'ukrposhta-shipping-for-woocommerce' ),
-			'regionsFail'    => __( 'Regions are unavailable. Check the connection to Ukrposhta.', 'ukrposhta-shipping-for-woocommerce' ),
-			'noRegion'       => __( 'Nothing found', 'ukrposhta-shipping-for-woocommerce' ),
-			'noCity'         => __( 'Nothing found', 'ukrposhta-shipping-for-woocommerce' ),
-			'noOffice'       => __( 'No post offices here', 'ukrposhta-shipping-for-woocommerce' ),
-			'fallbackName'   => __( 'Ukrposhta', 'ukrposhta-shipping-for-woocommerce' ),
+			'title'          => __( 'Ukrposhta delivery', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'region'         => __( 'Region', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'regionPh'       => __( 'Choose a region…', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'city'           => __( 'City', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'cityPh'         => __( 'Choose a region first', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'cityReady'      => __( 'Start typing the name…', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'office'         => __( 'Post office', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'officePh'       => __( 'Choose a city first', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'officeReady'    => __( 'Pick a post office or an index…', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'searching'      => __( 'Searching…', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'loading'        => __( 'Loading…', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'loadingRegions' => __( 'Loading regions…', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'regionsFail'    => __( 'Regions are unavailable. Check the connection to Ukrposhta.', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'noRegion'       => __( 'Nothing found', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'noCity'         => __( 'Nothing found', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'noOffice'       => __( 'No post offices here', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
+			'fallbackName'   => __( 'Ukrposhta', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 		);
 	}
 
@@ -222,7 +222,7 @@ class Picker {
 		}
 		$postindex = ( WC()->session ) ? (string) WC()->session->get( 'upwc_office_postindex', '' ) : '';
 		if ( '' === $postindex ) {
-			wc_add_notice( __( 'Please choose a region, a city and an Ukrposhta post office.', 'ukrposhta-shipping-for-woocommerce' ), 'error' );
+			wc_add_notice( __( 'Please choose a region, a city and an Ukrposhta post office.', 'catcode-shipping-with-ukrposhta-for-woocommerce' ), 'error' );
 		}
 	}
 
@@ -281,7 +281,7 @@ class Picker {
 		$postindex = (string) $order->get_meta( '_upwc_postindex' );
 
 		$rows['upwc_office'] = array(
-			'label' => __( 'Ukrposhta post office:', 'ukrposhta-shipping-for-woocommerce' ),
+			'label' => __( 'Ukrposhta post office:', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 			'value' => esc_html( trim( $city . ', ' . $office . ( '' !== $postindex ? ' (' . $postindex . ')' : '' ), ', ' ) ),
 		);
 		return $rows;

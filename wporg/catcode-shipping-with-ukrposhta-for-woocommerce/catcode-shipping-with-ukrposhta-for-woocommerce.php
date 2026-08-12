@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Ukrposhta Shipping for WooCommerce
+ * Plugin Name: CatCode Shipping with Ukrposhta for WooCommerce
  * Plugin URI: https://catcode.com.ua/modules/ukrposhta-shipping-for-woocommerce/
  * Description: Ukrposhta delivery for WooCommerce: the customer picks region, city and post office at checkout from the official Address Classifier, and the delivery price is quoted live. Shipment (barcode) creation and sticker printing come in a later update.
  * Version: 1.1.1
@@ -11,7 +11,7 @@
  * Author URI: https://catcode.com.ua
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: ukrposhta-shipping-for-woocommerce
+ * Text Domain: catcode-shipping-with-ukrposhta-for-woocommerce
  * Domain Path: /languages
  * WC requires at least: 6.0
  * WC tested up to: 10.7
@@ -61,7 +61,7 @@ add_action(
 			add_action(
 				'admin_notices',
 				static function () {
-					echo '<div class="notice notice-error"><p>' . esc_html__( 'Ukrposhta Shipping for WooCommerce requires an active WooCommerce installation.', 'ukrposhta-shipping-for-woocommerce' ) . '</p></div>';
+					echo '<div class="notice notice-error"><p>' . esc_html__( 'CatCode Shipping with Ukrposhta for WooCommerce requires an active WooCommerce installation.', 'catcode-shipping-with-ukrposhta-for-woocommerce' ) . '</p></div>';
 				}
 			);
 			return;

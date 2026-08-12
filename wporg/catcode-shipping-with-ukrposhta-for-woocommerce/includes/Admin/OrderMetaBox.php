@@ -31,7 +31,7 @@ class OrderMetaBox {
 		}
 		add_meta_box(
 			'upwc-office',
-			__( 'Ukrposhta', 'ukrposhta-shipping-for-woocommerce' ),
+			__( 'Ukrposhta', 'catcode-shipping-with-ukrposhta-for-woocommerce' ),
 			array( $this, 'render' ),
 			$screen_id,
 			'side',
@@ -55,16 +55,16 @@ class OrderMetaBox {
 		$postindex = (string) $order->get_meta( '_upwc_postindex' );
 
 		if ( '' === $office && '' === $postindex ) {
-			echo '<p>' . esc_html__( 'Ukrposhta was not chosen for this order.', 'ukrposhta-shipping-for-woocommerce' ) . '</p>';
+			echo '<p>' . esc_html__( 'Ukrposhta was not chosen for this order.', 'catcode-shipping-with-ukrposhta-for-woocommerce' ) . '</p>';
 			return;
 		}
 		?>
 		<p>
-			<strong><?php esc_html_e( 'City:', 'ukrposhta-shipping-for-woocommerce' ); ?></strong>
+			<strong><?php esc_html_e( 'City:', 'catcode-shipping-with-ukrposhta-for-woocommerce' ); ?></strong>
 			<?php echo esc_html( '' !== $city ? $city : '—' ); ?><br>
-			<strong><?php esc_html_e( 'Post office:', 'ukrposhta-shipping-for-woocommerce' ); ?></strong>
+			<strong><?php esc_html_e( 'Post office:', 'catcode-shipping-with-ukrposhta-for-woocommerce' ); ?></strong>
 			<?php echo esc_html( '' !== $office ? $office : '—' ); ?><br>
-			<strong><?php esc_html_e( 'Post index:', 'ukrposhta-shipping-for-woocommerce' ); ?></strong>
+			<strong><?php esc_html_e( 'Post index:', 'catcode-shipping-with-ukrposhta-for-woocommerce' ); ?></strong>
 			<?php echo esc_html( '' !== $postindex ? $postindex : '—' ); ?>
 		</p>
 		<?php
