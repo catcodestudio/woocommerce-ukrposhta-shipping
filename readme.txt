@@ -49,6 +49,9 @@ The office picker targets the classic checkout. Order meta is also captured on t
 * Added: city search falls back to transliteration, so "Drohobych" finds Дрогобич.
 * Fixed: the picker no longer renders on the "order received" page and stays hidden until Ukrposhta is the selected shipping method.
 * Fixed: the office cache compared local time against the database clock in UTC.
+* Fixed: the tariff request never returned a price - measurements have to be sent inside `parcels`, and a sender index starting with 0 (01001) was cast to a number and rejected. Every quote used to fall back to the flat rate.
+* Fixed: switching the payment method now refreshes the delivery price instead of leaving a stale one on screen.
+* Added: the picker restores the chosen office after a page reload.
 
 = 1.0.1 =
 * Works on hosts without the mbstring extension - city search and parcel description no longer fail silently.

@@ -64,6 +64,11 @@ class Picker {
 				'nonce'    => wp_create_nonce( 'upwc' ),
 				'accent'   => $accent,
 				'methodId' => 'ukrposhta',
+				// The choice lives in the session and keeps driving the tariff
+				// after a reload, so the widget has to show it back — otherwise
+				// the fields look empty while the customer is being charged for
+				// an office they can no longer see.
+				'selected' => $this->session_selection(),
 			)
 		);
 		wp_enqueue_script( 'upwc-picker' );
@@ -116,12 +121,28 @@ class Picker {
 		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
 			wp_send_json( array( 'ok' => false ) );
 		}
-		$fields = array( 'region_id', 'city_id', 'city_name', 'office_postindex', 'office_name' );
+		$fields = array( 'region_id', 'region_name', 'city_id', 'city_name', 'office_postindex', 'office_name' );
 		foreach ( $fields as $f ) {
 			$val = isset( $_POST[ $f ] ) ? sanitize_text_field( wp_unslash( $_POST[ $f ] ) ) : '';
 			WC()->session->set( 'upwc_' . $f, $val );
 		}
 		wp_send_json( array( 'ok' => true ) );
+	}
+
+	/**
+	 * What the customer picked, as stored in the session.
+	 *
+	 * @return array<string,string>
+	 */
+	private function session_selection(): array {
+		$out    = array();
+		$fields = array( 'region_id', 'region_name', 'city_id', 'city_name', 'office_postindex', 'office_name' );
+		foreach ( $fields as $field ) {
+			$out[ $field ] = ( function_exists( 'WC' ) && WC()->session )
+				? (string) WC()->session->get( 'upwc_' . $field, '' )
+				: '';
+		}
+		return $out;
 	}
 
 	// ---- rate cache busting + validation ----

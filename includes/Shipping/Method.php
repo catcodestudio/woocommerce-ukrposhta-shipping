@@ -8,6 +8,7 @@
 
 namespace CatCode\UkrposhtaWC\Shipping;
 
+use CatCode\UkrposhtaWC\Api\Client;
 use CatCode\UkrposhtaWC\Core\Crypto;
 use CatCode\UkrposhtaWC\Core\Settings;
 
@@ -195,12 +196,12 @@ class Method extends \WC_Shipping_Method {
 			$cost = 0.0;
 		} else {
 			$client        = Settings::client();
-			$sender        = (int) preg_replace( '/\D/', '', (string) $this->get_option( 'sender_postcode', '' ) );
-			$recip_postidx = 0;
+			$sender        = Client::postcode5( (string) $this->get_option( 'sender_postcode', '' ) );
+			$recip_postidx = '';
 			if ( function_exists( 'WC' ) && WC()->session ) {
-				$recip_postidx = (int) preg_replace( '/\D/', '', (string) WC()->session->get( 'upwc_office_postindex', '' ) );
+				$recip_postidx = Client::postcode5( (string) WC()->session->get( 'upwc_office_postindex', '' ) );
 			}
-			if ( $client && $sender > 0 && $recip_postidx > 0 ) {
+			if ( $client && '' !== $sender && '' !== $recip_postidx ) {
 				$type = (string) $this->get_option( 'service_type', 'STANDARD' );
 
 				// Declared value and cash-on-delivery are both billed by

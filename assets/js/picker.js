@@ -146,7 +146,7 @@
   const pickOffice = (pi, name) => {
     $('#upwc-office').value = `${name} (${pi})`; $('#upwc-pi').value = pi; $('#upwc-pi').dataset.name = name;
     close($('#upwc-office-m')); renderSum(); fillNative();
-    api('upwc_set', { region_id: regionId, city_id: cityId, city_name: cityName, office_postindex: pi, office_name: name }).then(recalc);
+    api('upwc_set', { region_id: regionId, region_name: regionName, city_id: cityId, city_name: cityName, office_postindex: pi, office_name: name }).then(recalc);
   };
 
   const bind = () => {
@@ -192,11 +192,31 @@
     return true;
   };
 
+  // Replay what the session already holds, so a reload does not look like the
+  // customer never chose anything while the tariff says otherwise.
+  const restore = () => {
+    const s = cfg.selected || {};
+    if (!s.office_postindex) return;
+    regionName = s.region_name || '';
+    $('#upwc-region').value = regionName;
+    cityId = s.city_id || '';
+    cityName = s.city_name || '';
+    regionId = s.region_id || '';
+    $('#upwc-city').value = cityName;
+    $('#upwc-city').disabled = false;
+    $('#upwc-office').value = s.office_name ? `${s.office_name} (${s.office_postindex})` : s.office_postindex;
+    $('#upwc-office').disabled = false;
+    $('#upwc-pi').value = s.office_postindex;
+    $('#upwc-pi').dataset.name = s.office_name || '';
+    renderSum();
+  };
+
   const init = () => {
     if (window.__upwcMounted) return;
     if (!mount()) return;
     window.__upwcMounted = true;
     bind();
+    restore();
     api('upwc_regions').then((d) => { regions = (d && d.regions) || []; }).catch(() => {}).finally(() => { regionsReady = true; if ($('#upwc-region') === document.activeElement) renderRegions($('#upwc-region').value); });
   };
 
@@ -210,5 +230,12 @@
       else applyGate();
     });
     window.jQuery(document.body).on('change', 'input[name^="shipping_method"], select[name^="shipping_method"]', applyGate);
+
+    // Ukrposhta bills a commission for cash-on-delivery, so the quote depends
+    // on the gateway — but WooCommerce does not refresh the totals when the
+    // payment method changes, leaving a stale delivery price on screen.
+    window.jQuery(document.body).on('change', 'input[name="payment_method"]', () => {
+      if (isChosen()) window.jQuery(document.body).trigger('update_checkout');
+    });
   }
 })();

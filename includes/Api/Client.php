@@ -164,14 +164,41 @@ class Client {
 
 	// ---- delivery price ----
 
-	public function delivery_price( int $sender_postcode, int $recipient_postcode, int $weight_g, array $dims = array(), string $type = 'STANDARD', string $delivery_type = 'W2W', float $declared = 0, float $postpay = 0 ): array {
+	/**
+	 * Ukrposhta validates postcodes against `^$|\d{5}`, so they must stay
+	 * five-character strings: 01001 cast to an int becomes 1001 and every
+	 * request from a Kyiv sender came back HTTP 400.
+	 *
+	 * @param int|string $raw Postcode in any shape.
+	 */
+	public static function postcode5( $raw ): string {
+		$digits = preg_replace( '/\D/', '', (string) $raw );
+		if ( '' === $digits ) {
+			return '';
+		}
+		return str_pad( substr( $digits, 0, 5 ), 5, '0', STR_PAD_LEFT );
+	}
+
+	/**
+	 * @param int|string $sender_postcode    Sender postcode.
+	 * @param int|string $recipient_postcode Recipient postcode.
+	 */
+	public function delivery_price( $sender_postcode, $recipient_postcode, int $weight_g, array $dims = array(), string $type = 'STANDARD', string $delivery_type = 'W2W', float $declared = 0, float $postpay = 0 ): array {
+		// The measurements go inside `parcels`, not at the top level: a flat
+		// weight/length/width/height body is rejected with "At least one parcel
+		// should be filled", which silently pushed every quote onto the flat
+		// fallback rate.
 		$body = array(
-			'weight'       => max( $weight_g, 1 ),
-			'length'       => max( (int) ( $dims['length'] ?? 20 ), 1 ),
-			'width'        => max( (int) ( $dims['width'] ?? 20 ), 1 ),
-			'height'       => max( (int) ( $dims['height'] ?? 10 ), 1 ),
-			'addressFrom'  => array( 'postcode' => $sender_postcode ),
-			'addressTo'    => array( 'postcode' => $recipient_postcode ),
+			'parcels'      => array(
+				array(
+					'weight' => max( $weight_g, 1 ),
+					'length' => max( (int) ( $dims['length'] ?? 20 ), 1 ),
+					'width'  => max( (int) ( $dims['width'] ?? 20 ), 1 ),
+					'height' => max( (int) ( $dims['height'] ?? 10 ), 1 ),
+				),
+			),
+			'addressFrom'  => array( 'postcode' => self::postcode5( $sender_postcode ) ),
+			'addressTo'    => array( 'postcode' => self::postcode5( $recipient_postcode ) ),
 			'type'         => $type,
 			'deliveryType' => $delivery_type,
 		);
