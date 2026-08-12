@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, ukrposhta, ukraine, delivery
 Requires at least: 5.6
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,10 @@ Yes. The Address Classifier and tariff both require a Bearer issued by Ukrposhta
 The office picker targets the classic checkout. Order meta is also captured on the Store API (block) checkout path.
 
 == Changelog ==
+
+= 1.0.1 =
+* Works on hosts without the mbstring extension - city search and parcel description no longer fail silently.
+* Lowered requirements to WordPress 5.6 / WooCommerce 6.0 / PHP 7.4.
 
 = 1.0.0 =
 * Initial release — checkout post-office picker and live tariff.
