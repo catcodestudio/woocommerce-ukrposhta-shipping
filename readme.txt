@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, ukrposhta, ukraine, delivery
 Requires at least: 5.6
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,17 @@ Yes. The Address Classifier and tariff both require a Bearer issued by Ukrposhta
 The office picker targets the classic checkout. Order meta is also captured on the Store API (block) checkout path.
 
 == Changelog ==
+
+= 1.1.0 =
+* Fixed: the delivery price no longer sticks to the first quote — changing the post office (or the payment method) now re-rates the cart.
+* Fixed: cash-on-delivery commission was added to every order, including prepaid ones. It is now charged only for the payment methods you list as COD.
+* Added: order screen box with the chosen city, post office and post index — the meta was stored but invisible to the shop manager.
+* Added: the chosen post office is shown on the thank-you page, in the customer account and in order e-mails.
+* Added: the checkout refuses to go through with Ukrposhta selected but no post office chosen.
+* Added: declared value is now optional — turn it off to quote a cheaper tariff without insurance.
+* Added: city search falls back to transliteration, so "Drohobych" finds Дрогобич.
+* Fixed: the picker no longer renders on the "order received" page and stays hidden until Ukrposhta is the selected shipping method.
+* Fixed: the office cache compared local time against the database clock in UTC.
 
 = 1.0.1 =
 * Works on hosts without the mbstring extension - city search and parcel description no longer fail silently.

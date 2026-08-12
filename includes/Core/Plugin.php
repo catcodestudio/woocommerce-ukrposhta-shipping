@@ -7,6 +7,7 @@
 
 namespace CatCode\UkrposhtaWC\Core;
 
+use CatCode\UkrposhtaWC\Admin\OrderMetaBox;
 use CatCode\UkrposhtaWC\Checkout\Picker;
 use CatCode\UkrposhtaWC\Shipping\Method;
 
@@ -38,6 +39,10 @@ class Plugin {
 		add_filter( 'woocommerce_shipping_methods', array( $this, 'register_method' ) );
 
 		( new Picker() )->register_hooks();
+
+		if ( is_admin() ) {
+			( new OrderMetaBox() )->register_hooks();
+		}
 	}
 
 	public function register_method( array $methods ): array {

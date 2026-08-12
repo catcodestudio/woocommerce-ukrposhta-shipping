@@ -20,6 +20,17 @@ class Picker {
 		add_action( 'woocommerce_after_order_notes', array( $this, 'render_root' ) );
 		add_action( 'woocommerce_before_order_notes', array( $this, 'render_root' ) );
 
+		// The chosen office (and whether the order is cash-on-delivery) drives
+		// the tariff but is not part of the package, so WooCommerce would serve
+		// the first calculated rate forever. Folding both into the package makes
+		// the rate hash change with the customer's choice. Must be
+		// `cart_shipping_packages` (built before rating), not `shipping_packages`
+		// — the latter fires after the rates are already calculated.
+		add_filter( 'woocommerce_cart_shipping_packages', array( $this, 'tag_packages' ) );
+
+		add_action( 'woocommerce_checkout_process', array( $this, 'validate_classic' ) );
+		add_filter( 'woocommerce_get_order_item_totals', array( $this, 'order_totals_row' ), 10, 2 );
+
 		add_action( 'wp_ajax_upwc_regions', array( $this, 'ajax_regions' ) );
 		add_action( 'wp_ajax_nopriv_upwc_regions', array( $this, 'ajax_regions' ) );
 		add_action( 'wp_ajax_upwc_cities', array( $this, 'ajax_cities' ) );
@@ -34,7 +45,9 @@ class Picker {
 	}
 
 	public function enqueue(): void {
-		if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
+		// is_checkout() is still true on the "order received" page, where a
+		// picker would let the customer edit a choice that no longer matters.
+		if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || is_order_received_page() ) {
 			return;
 		}
 		$ver = UPWC_VERSION . '-' . (int) @filemtime( UPWC_DIR . 'assets/js/picker.js' );
@@ -47,9 +60,10 @@ class Picker {
 			'upwc-picker',
 			'UPWC',
 			array(
-				'ajax'   => admin_url( 'admin-ajax.php' ),
-				'nonce'  => wp_create_nonce( 'upwc' ),
-				'accent' => $accent,
+				'ajax'     => admin_url( 'admin-ajax.php' ),
+				'nonce'    => wp_create_nonce( 'upwc' ),
+				'accent'   => $accent,
+				'methodId' => 'ukrposhta',
 			)
 		);
 		wp_enqueue_script( 'upwc-picker' );
@@ -110,6 +124,58 @@ class Picker {
 		wp_send_json( array( 'ok' => true ) );
 	}
 
+	// ---- rate cache busting + validation ----
+
+	/** Is Ukrposhta the chosen shipping method for this checkout? */
+	public static function selected(): bool {
+		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
+			return false;
+		}
+		foreach ( (array) WC()->session->get( 'chosen_shipping_methods', array() ) as $chosen ) {
+			if ( 0 === strpos( (string) $chosen, 'ukrposhta' ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Fold the customer's choice into the package so WooCommerce recalculates
+	 * the rate instead of replaying the cached one.
+	 *
+	 * @param array<int,array<string,mixed>> $packages Shipping packages.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function tag_packages( $packages ) {
+		if ( ! is_array( $packages ) || ! function_exists( 'WC' ) || ! WC()->session ) {
+			return $packages;
+		}
+		$postindex = (string) WC()->session->get( 'upwc_office_postindex', '' );
+		$payment   = (string) WC()->session->get( 'chosen_payment_method', '' );
+		if ( '' === $postindex && '' === $payment ) {
+			return $packages;
+		}
+		foreach ( $packages as $key => $package ) {
+			$packages[ $key ]['upwc_postindex'] = $postindex;
+			$packages[ $key ]['upwc_payment']   = $payment;
+		}
+		return $packages;
+	}
+
+	/**
+	 * Without an office the tariff silently falls back to the flat rate and the
+	 * merchant gets an order with no delivery address — so refuse the checkout.
+	 */
+	public function validate_classic(): void {
+		if ( ! self::selected() ) {
+			return;
+		}
+		$postindex = ( WC()->session ) ? (string) WC()->session->get( 'upwc_office_postindex', '' ) : '';
+		if ( '' === $postindex ) {
+			wc_add_notice( __( 'Оберіть область, місто і відділення Укрпошти.', 'ukrposhta-shipping-for-woocommerce' ), 'error' );
+		}
+	}
+
 	// ---- persist to order ----
 
 	public function save_order_meta( int $order_id ): void {
@@ -142,5 +208,32 @@ class Picker {
 		$order->update_meta_data( '_upwc_postindex', $postindex );
 		$order->update_meta_data( '_upwc_city', (string) WC()->session->get( 'upwc_city_name', '' ) );
 		$order->update_meta_data( '_upwc_office', (string) WC()->session->get( 'upwc_office_name', '' ) );
+	}
+
+	/**
+	 * Show the chosen office on the thank-you page, in the customer's account
+	 * and in the order e-mails — the meta keys are underscore-prefixed, so
+	 * without this row nobody outside the code ever sees the choice.
+	 *
+	 * @param array<string,array<string,string>> $rows  Total rows.
+	 * @param mixed                              $order Order object.
+	 * @return array<string,array<string,string>>
+	 */
+	public function order_totals_row( $rows, $order ) {
+		if ( ! $order instanceof \WC_Order ) {
+			return $rows;
+		}
+		$office = (string) $order->get_meta( '_upwc_office' );
+		if ( '' === $office ) {
+			return $rows;
+		}
+		$city      = (string) $order->get_meta( '_upwc_city' );
+		$postindex = (string) $order->get_meta( '_upwc_postindex' );
+
+		$rows['upwc_office'] = array(
+			'label' => __( 'Відділення Укрпошти:', 'ukrposhta-shipping-for-woocommerce' ),
+			'value' => esc_html( trim( $city . ', ' . $office . ( '' !== $postindex ? ' (' . $postindex . ')' : '' ), ', ' ) ),
+		);
+		return $rows;
 	}
 }

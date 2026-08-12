@@ -87,6 +87,19 @@ class Method extends \WC_Shipping_Method {
 				'description' => __( '0 — вимкнено.', 'ukrposhta-shipping-for-woocommerce' ),
 				'default'     => '0',
 			),
+			'declared_value'   => array(
+				'title'       => __( 'Оголошена цінність', 'ukrposhta-shipping-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'label'       => __( 'Передавати суму замовлення як оголошену цінність', 'ukrposhta-shipping-for-woocommerce' ),
+				'description' => __( 'Укрпошта бере за це відсоток — тариф у чекауті буде вищим, зате посилка застрахована.', 'ukrposhta-shipping-for-woocommerce' ),
+				'default'     => 'yes',
+			),
+			'cod_gateways'     => array(
+				'title'       => __( 'Способи оплати = післяплата', 'ukrposhta-shipping-for-woocommerce' ),
+				'type'        => 'text',
+				'description' => __( 'ID платіжних методів через кому. Для них у тариф додається комісія Укрпошти за післяплату. Стандартний метод WooCommerce — <code>cod</code>.', 'ukrposhta-shipping-for-woocommerce' ),
+				'default'     => 'cod',
+			),
 			'accent_color'     => array(
 				'title'   => __( 'Акцентний колір віджета', 'ukrposhta-shipping-for-woocommerce' ),
 				'type'    => 'color',
@@ -142,6 +155,24 @@ class Method extends \WC_Shipping_Method {
 		return $result;
 	}
 
+	/**
+	 * Is the customer paying on collection? Read from the session because the
+	 * gateway is chosen after shipping is first rated; Picker::tag_packages()
+	 * puts the same value into the package, so switching gateway re-rates
+	 * instead of replaying the cached rate.
+	 */
+	private function is_cod(): bool {
+		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
+			return false;
+		}
+		$chosen = (string) WC()->session->get( 'chosen_payment_method', '' );
+		if ( '' === $chosen ) {
+			return false;
+		}
+		$ids = array_filter( array_map( 'trim', explode( ',', (string) $this->get_option( 'cod_gateways', 'cod' ) ) ) );
+		return in_array( $chosen, $ids, true );
+	}
+
 	public function calculate_shipping( $package = array() ) {
 		$default = (float) $this->get_option( 'default_cost', 65 );
 		$cost    = $default;
@@ -171,12 +202,19 @@ class Method extends \WC_Shipping_Method {
 			}
 			if ( $client && $sender > 0 && $recip_postidx > 0 ) {
 				$type = (string) $this->get_option( 'service_type', 'STANDARD' );
-				$resp = $client->delivery_price( $sender, $recip_postidx, $weight_g, array(), $type, 'W2W', $subtotal );
+
+				// Declared value and cash-on-delivery are both billed by
+				// Ukrposhta, so they are only sent when they actually apply —
+				// otherwise every prepaid order carried a COD commission.
+				$declared = ( 'yes' === $this->get_option( 'declared_value', 'yes' ) ) ? $subtotal : 0.0;
+				$postpay  = $this->is_cod() ? $subtotal : 0.0;
+
+				$resp = $client->delivery_price( $sender, $recip_postidx, $weight_g, array(), $type, 'W2W', $declared, $postpay );
 				if ( ! empty( $resp['success'] ) && is_array( $resp['data'] ?? null ) ) {
 					$live = $resp['data']['deliveryPrice'] ?? null;
 					if ( null !== $live && (float) $live > 0 ) {
 						$cost = (float) $live;
-						if ( ! empty( $resp['data']['postPayDeliveryPrice'] ) ) {
+						if ( $postpay > 0 && ! empty( $resp['data']['postPayDeliveryPrice'] ) ) {
 							$cost += (float) $resp['data']['postPayDeliveryPrice'];
 						}
 					}

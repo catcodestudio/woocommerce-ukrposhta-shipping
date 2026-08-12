@@ -164,12 +164,31 @@
     document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) { close(rm); close(cm); close(om); } });
   };
 
+  // Only Ukrposhta orders need an office, so the widget stays out of the way
+  // until the customer actually picks this shipping method.
+  const methodId = cfg.methodId || 'ukrposhta';
+  const isChosen = () => {
+    const inputs = document.querySelectorAll('input[name^="shipping_method"], select[name^="shipping_method"]');
+    if (!inputs.length) return true; // single available rate: WC prints no control
+    let seen = false;
+    for (const i of inputs) {
+      if (i.type === 'hidden') { seen = true; if (String(i.value).indexOf(methodId) === 0) return true; continue; }
+      if (i.checked || i.tagName === 'SELECT') {
+        seen = true;
+        if (String(i.value).indexOf(methodId) === 0) return true;
+      }
+    }
+    return !seen;
+  };
+  const applyGate = () => { wrap.style.display = isChosen() ? '' : 'none'; };
+
   const mount = () => {
     const root = document.querySelector('#upwc-picker-root');
     if (!root || root.__done) return false;
     root.__done = true;
     root.appendChild(wrap);
     document.head.appendChild(style);
+    applyGate();
     return true;
   };
 
@@ -185,5 +204,11 @@
   const boot = () => { window.__upwcMounted = false; init(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
-  if (window.jQuery) window.jQuery(document.body).on('updated_checkout', () => { if (!document.querySelector('#upwc-picker-root .upwc')) { window.__upwcMounted = false; init(); } });
+  if (window.jQuery) {
+    window.jQuery(document.body).on('updated_checkout', () => {
+      if (!document.querySelector('#upwc-picker-root .upwc')) { window.__upwcMounted = false; init(); }
+      else applyGate();
+    });
+    window.jQuery(document.body).on('change', 'input[name^="shipping_method"], select[name^="shipping_method"]', applyGate);
+  }
 })();

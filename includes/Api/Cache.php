@@ -51,8 +51,20 @@ class Cache {
 		if ( is_array( $cached ) ) {
 			return $cached;
 		}
+		$entries = Client::entries( $client->get_cities( $region_id, $query ) );
+
+		// The classifier only matches Ukrainian spelling. A customer typing
+		// "Drohobych" got a silent empty list, so retry transliterated — but
+		// only as a fallback, never instead of the literal query.
+		if ( ! $entries && preg_match( '/[a-zA-Z]/', $query ) ) {
+			$latin = Translit::to_cyrillic( $query );
+			if ( $latin !== $query ) {
+				$entries = Client::entries( $client->get_cities( $region_id, $latin ) );
+			}
+		}
+
 		$out = array();
-		foreach ( Client::entries( $client->get_cities( $region_id, $query ) ) as $e ) {
+		foreach ( $entries as $e ) {
 			$cid  = (string) ( $e['CITY_ID'] ?? '' );
 			$name = (string) ( $e['CITY_UA'] ?? '' );
 			if ( '' === $cid || '' === $name ) {
@@ -73,9 +85,12 @@ class Cache {
 		$table = $wpdb->prefix . 'upwc_offices';
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery -- classifier cache table.
+		// Both sides in UTC: current_time('mysql') is local, MySQL NOW() is the
+		// server clock — mixing them made the cache look up to a timezone-offset
+		// fresher (or staler) than it really was.
 		$fresh = (int) $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table} WHERE city_id = %s AND updated_at > ( NOW() - INTERVAL %d SECOND )",
+				"SELECT COUNT(*) FROM {$table} WHERE city_id = %s AND updated_at > ( UTC_TIMESTAMP() - INTERVAL %d SECOND )",
 				$city_id,
 				self::OFFICE_TTL
 			)
@@ -89,7 +104,7 @@ class Cache {
 			return self::rows( $city_id ); // whatever stale cache exists
 		}
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE city_id = %s", $city_id ) );
-		$now = current_time( 'mysql' );
+		$now = current_time( 'mysql', true );
 		foreach ( $entries as $e ) {
 			$pi = (string) ( $e['POSTINDEX'] ?? '' );
 			if ( '' === $pi ) {

@@ -3,7 +3,7 @@
  * Plugin Name: Ukrposhta Shipping for WooCommerce
  * Plugin URI: https://catcode.com.ua/modules/ukrposhta-shipping-for-woocommerce/
  * Description: Доставка Укрпоштою для WooCommerce: вибір область→місто→відділення в чекауті через офіційний Адресний класифікатор і розрахунок тарифу. Створення ТТН/наліпок — в наступному оновленні.
- * Version: 1.0.1
+ * Version: 1.1.0
  * Requires at least: 5.6
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
@@ -21,7 +21,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'UPWC_VERSION', '1.0.1' );
+define( 'UPWC_VERSION', '1.1.0' );
 define( 'UPWC_FILE', __FILE__ );
 define( 'UPWC_DIR', plugin_dir_path( __FILE__ ) );
 define( 'UPWC_URL', plugin_dir_url( __FILE__ ) );
