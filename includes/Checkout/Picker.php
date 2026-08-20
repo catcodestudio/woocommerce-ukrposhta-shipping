@@ -176,13 +176,20 @@ class Picker {
 
 	// ---- rate cache busting + validation ----
 
-	/** Is Ukrposhta the chosen shipping method for this checkout? */
+	/**
+	 * Is the DOMESTIC Ukrposhta method the chosen one for this checkout?
+	 *
+	 * The international rate id ends with `:intl` and has no post office at all,
+	 * so it must not switch the picker on — otherwise a foreign order is blocked
+	 * by "choose a post office" that cannot be satisfied.
+	 */
 	public static function selected(): bool {
 		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
 			return false;
 		}
 		foreach ( (array) WC()->session->get( 'chosen_shipping_methods', array() ) as $chosen ) {
-			if ( 0 === strpos( (string) $chosen, 'ukrposhta' ) ) {
+			$chosen = (string) $chosen;
+			if ( 0 === strpos( $chosen, 'ukrposhta' ) && false === strpos( $chosen, ':intl' ) ) {
 				return true;
 			}
 		}

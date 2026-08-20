@@ -101,6 +101,66 @@ class Method extends \WC_Shipping_Method {
 				'description' => __( 'Comma-separated payment method IDs. For these the Ukrposhta cash-on-delivery commission is added to the tariff. The standard WooCommerce method is <code>cod</code>.', 'ukrposhta-shipping-for-woocommerce' ),
 				'default'     => 'cod',
 			),
+			'intl_status'      => array(
+				'title'       => __( 'International shipments', 'ukrposhta-shipping-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'label'       => __( 'Quote deliveries outside Ukraine', 'ukrposhta-shipping-for-woocommerce' ),
+				'description' => __( 'The rate is keyed by destination country and weight, no post office is picked. Add this method to a zone that contains the countries you ship to.', 'ukrposhta-shipping-for-woocommerce' ),
+				'default'     => 'no',
+			),
+			'intl_transport'   => array(
+				'title'   => __( 'Transport type', 'ukrposhta-shipping-for-woocommerce' ),
+				'type'    => 'select',
+				'options' => array(
+					'AVIA'   => __( 'Air', 'ukrposhta-shipping-for-woocommerce' ),
+					'GROUND' => __( 'Ground', 'ukrposhta-shipping-for-woocommerce' ),
+				),
+				'default' => 'AVIA',
+			),
+			'intl_package'     => array(
+				'title'       => __( 'Package type', 'ukrposhta-shipping-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => array(
+					'PARCEL'         => 'PARCEL',
+					'EMS'            => 'EMS',
+					'SMALL_BAG'      => 'SMALL_BAG',
+					'BANDEROLE'      => 'BANDEROLE',
+					'PRIME'          => 'PRIME',
+					'DECLARED_VALUE' => 'DECLARED_VALUE',
+					'LETTER'         => 'LETTER',
+				),
+				'description' => __( 'Not every type is available for every country: an unavailable combination is reported by Ukrposhta and the method is then not offered.', 'ukrposhta-shipping-for-woocommerce' ),
+				'default'     => 'PARCEL',
+			),
+			'intl_category'    => array(
+				'title'   => __( 'Content category', 'ukrposhta-shipping-for-woocommerce' ),
+				'type'    => 'select',
+				'options' => array(
+					'SALE_OF_GOODS'     => 'SALE_OF_GOODS',
+					'GIFT'              => 'GIFT',
+					'MIXED_CONTENT'     => 'MIXED_CONTENT',
+					'DOCUMENTS'         => 'DOCUMENTS',
+					'COMMERCIAL_SAMPLE' => 'COMMERCIAL_SAMPLE',
+					'RETURNING_GOODS'   => 'RETURNING_GOODS',
+				),
+				'default' => 'SALE_OF_GOODS',
+			),
+			'intl_currency'    => array(
+				'title'       => __( 'Tariff currency', 'ukrposhta-shipping-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => array(
+					'USD' => 'USD',
+					'EUR' => 'EUR',
+				),
+				'description' => __( 'Some destinations (the US among them) are only quoted in USD.', 'ukrposhta-shipping-for-woocommerce' ),
+				'default'     => 'USD',
+			),
+			'intl_default_cost' => array(
+				'title'       => __( 'International fallback rate, UAH', 'ukrposhta-shipping-for-woocommerce' ),
+				'type'        => 'text',
+				'description' => __( 'Leave empty so a failed quote hides the method instead of inventing a price. The reason is written to WooCommerce - Status - Logs.', 'ukrposhta-shipping-for-woocommerce' ),
+				'default'     => '',
+			),
 			'accent_color'     => array(
 				'title'   => __( 'Widget accent colour', 'ukrposhta-shipping-for-woocommerce' ),
 				'type'    => 'color',
@@ -192,6 +252,15 @@ class Method extends \WC_Shipping_Method {
 		$weight_kg = wc_get_weight( $weight_kg, 'kg' );
 		$weight_g  = (int) max( round( $weight_kg * 1000 ), 1 );
 
+		// Abroad the office picker plays no part: the tariff is keyed by country
+		// and weight, so the international branch runs before anything reads a
+		// picked post office out of the session.
+		$country = strtoupper( (string) ( $package['destination']['country'] ?? '' ) );
+		if ( '' !== $country && 'UA' !== $country ) {
+			$this->add_international_rate( $package, $country, $weight_g, $subtotal );
+			return;
+		}
+
 		$free_over = (float) $this->get_option( 'free_over', 0 );
 		if ( $free_over > 0 && $subtotal >= $free_over ) {
 			$cost = 0.0;
@@ -228,6 +297,77 @@ class Method extends \WC_Shipping_Method {
 			array(
 				'id'      => $this->get_rate_id(),
 				'label'   => $this->title,
+				'cost'    => $cost,
+				'package' => $package,
+			)
+		);
+	}
+
+	/**
+	 * Rate for a destination outside Ukraine.
+	 *
+	 * A failed quote adds NO rate and logs the reason instead of falling back to
+	 * the domestic flat cost: quoting a 65 UAH parcel to Australia is worse than
+	 * showing no Ukrposhta option at all. A merchant who wants a fixed price
+	 * abroad sets `intl_default_cost` deliberately.
+	 */
+	private function add_international_rate( array $package, string $country, int $weight_g, float $subtotal ): void {
+		if ( 'yes' !== $this->get_option( 'intl_status', 'no' ) ) {
+			return;
+		}
+
+		$cost   = null;
+		$reason = '';
+		$client = Settings::client();
+
+		if ( ! $client ) {
+			$reason = 'no API key configured';
+		} else {
+			$resp = $client->international_delivery_price(
+				$country,
+				$weight_g,
+				array(),
+				array(
+					'transportType' => (string) $this->get_option( 'intl_transport', 'AVIA' ),
+					'packageType'   => (string) $this->get_option( 'intl_package', 'PARCEL' ),
+					'categoryType'  => (string) $this->get_option( 'intl_category', 'SALE_OF_GOODS' ),
+					'currencyCode'  => (string) $this->get_option( 'intl_currency', 'USD' ),
+					'declaredPrice' => ( 'yes' === $this->get_option( 'declared_value', 'yes' ) ) ? $subtotal : 0.0,
+				)
+			);
+			$live = $resp['data']['deliveryPrice'] ?? null;
+			if ( ! empty( $resp['success'] ) && null !== $live && (float) $live > 0 ) {
+				$cost = (float) $live;
+			} else {
+				// The API answers with a `message` for "this country cannot be
+				// served with this package type", so an empty price is not always
+				// an HTTP error - keep whatever it said.
+				$reason = trim( (string) ( $resp['data']['message'] ?? '' ) );
+				if ( '' === $reason ) {
+					$reason = implode( '; ', (array) ( $resp['errors'] ?? array() ) );
+				}
+			}
+		}
+
+		if ( null === $cost ) {
+			$fallback = (float) $this->get_option( 'intl_default_cost', 0 );
+			if ( $fallback > 0 ) {
+				$cost = $fallback;
+			} else {
+				if ( function_exists( 'wc_get_logger' ) ) {
+					wc_get_logger()->warning(
+						sprintf( 'Ukrposhta: no international rate for %s (%d g): %s', $country, $weight_g, $reason ),
+						array( 'source' => 'ukrposhta' )
+					);
+				}
+				return;
+			}
+		}
+
+		$this->add_rate(
+			array(
+				'id'      => $this->get_rate_id() . ':intl',
+				'label'   => $this->title . ' - ' . __( 'international', 'ukrposhta-shipping-for-woocommerce' ),
 				'cost'    => $cost,
 				'package' => $package,
 			)
