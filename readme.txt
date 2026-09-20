@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, ukrposhta, ukraine, delivery
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,9 @@ Yes. The Address Classifier and tariff both require a Bearer issued by Ukrposhta
 The office picker targets the classic checkout. Order meta is also captured on the Store API (block) checkout path.
 
 == Changelog ==
+
+= 1.2.1 =
+* Security: stored API keys are now encrypted with AES-256 (OpenSSL) instead of the old XOR obfuscation, which some hosting antivirus scanners flagged and deleted. Keys saved by earlier versions keep working.
 
 = 1.2.0 =
 * International shipments: the rate for a destination outside Ukraine is calculated from the country and the parcel weight (no post office involved).
