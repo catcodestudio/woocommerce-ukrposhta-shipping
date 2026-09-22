@@ -83,18 +83,44 @@
   const close = (m) => m.classList.remove('open');
   const muted = (x) => `<div class="upwc__opt upwc__opt--muted">${x}</div>`;
 
-  const setNative = (sel, v) => {
-    const n = document.querySelector(sel);
-    if (!n) return;
-    n.value = v;
-    n.dispatchEvent(new Event('change', { bubbles: true }));
+  const setNative = (node, v) => {
+    if (!node || node.value === v) return;
+    // The Blocks checkout is React: a plain `node.value = v` is thrown away on
+    // the next render. Going through the prototype setter is what makes React
+    // see the change - the Nova Poshta and Meest pickers do it the same way.
+    const proto = node instanceof window.HTMLSelectElement
+      ? window.HTMLSelectElement.prototype
+      : window.HTMLInputElement.prototype;
+    const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+    if (desc && desc.set) desc.set.call(node, v); else node.value = v;
+    node.dispatchEvent(new Event('input', { bubbles: true }));
+    node.dispatchEvent(new Event('change', { bubbles: true }));
   };
+  // Classic checkout ids are `#shipping_city`; the Blocks checkout renders
+  // `#shipping-city` and, when billing repeats the address, `#billing-city`.
+  const nativeNodes = (key) => ['shipping', 'billing']
+    .map((g) => document.querySelector('#' + g + '_' + key) || document.querySelector('#' + g + '-' + key))
+    .filter(Boolean);
   const fillNative = () => {
-    setNative('#shipping_postcode', $('#upwc-pi').value || '');
-    setNative('#shipping_city', cityName || '');
-    setNative('#shipping_address_1', $('#upwc-pi').dataset.name || t.fallbackName);
+    // Nothing chosen yet: leave whatever the customer typed alone, otherwise the
+    // fallback name would land in their street field before they picked anything.
+    if (!$('#upwc-pi').value) return;
+    const pairs = {
+      postcode: $('#upwc-pi').value || '',
+      city: cityName || '',
+      address_1: $('#upwc-pi').dataset.name || t.fallbackName,
+    };
+    Object.keys(pairs).forEach((key) => nativeNodes(key).forEach((n) => setNative(n, pairs[key])));
   };
-  const recalc = () => { if (window.jQuery) window.jQuery(document.body).trigger('update_checkout'); };
+  const recalc = () => {
+    if (window.jQuery) window.jQuery(document.body).trigger('update_checkout');
+    // Blocks never fires `update_checkout`; the cart store has to be told the
+    // server-side package changed, or the tariff stays at the previous rate.
+    try {
+      const store = window.wp && window.wp.data && window.wp.data.dispatch('wc/store/cart');
+      if (store && store.invalidateResolutionForStore) store.invalidateResolutionForStore();
+    } catch (e) { /* no Blocks store on this page */ }
+  };
 
   const renderSum = () => {
     const s = $('#upwc-sum'), name = $('#upwc-pi').dataset.name || '', pi = $('#upwc-pi').value || '';
@@ -173,25 +199,54 @@
   const methodId = cfg.methodId || 'ukrposhta';
   const isChosen = () => {
     const inputs = document.querySelectorAll('input[name^="shipping_method"], select[name^="shipping_method"]');
-    if (!inputs.length) return true; // single available rate: WC prints no control
-    let seen = false;
-    for (const i of inputs) {
-      if (i.type === 'hidden') { seen = true; if (String(i.value).indexOf(methodId) === 0) return true; continue; }
-      if (i.checked || i.tagName === 'SELECT') {
-        seen = true;
-        if (String(i.value).indexOf(methodId) === 0) return true;
+    if (inputs.length) {
+      let seen = false;
+      for (const i of inputs) {
+        if (i.type === 'hidden') { seen = true; if (String(i.value).indexOf(methodId) === 0) return true; continue; }
+        if (i.checked || i.tagName === 'SELECT') {
+          seen = true;
+          if (String(i.value).indexOf(methodId) === 0) return true;
+        }
       }
+      if (seen) return false;
     }
-    return !seen;
+    // Blocks names its radios `radio-control-...`, not `shipping_method[...]`,
+    // so the classic scan above finds nothing at all on that checkout.
+    const radio = document.querySelector('.wc-block-components-shipping-rates-control input[type="radio"]:checked, .wc-block-components-radio-control__input:checked');
+    if (radio) return String(radio.value).indexOf(methodId) === 0;
+    return true; // single available rate: WC prints no control
   };
-  const applyGate = () => { wrap.style.display = isChosen() ? '' : 'none'; };
+  const applyGate = () => {
+    const on = isChosen();
+    wrap.style.display = on ? '' : 'none';
+    // Refill on every pass: the Blocks address form is React and rewrites its
+    // inputs on each render, so a value written once at pick time is gone by the
+    // next one - and after a reload nothing wrote it at all.
+    if (on) fillNative();
+  };
 
+  // The classic checkout gets a mount point from PHP (`woocommerce_*_order_notes`).
+  // The Blocks checkout fires none of those hooks, so there is no root there at
+  // all - the widget goes right after the shipping-options block instead. Without
+  // this the picker never appeared on a Blocks checkout: the customer chose
+  // "Ukrposhta" and had no way to pick a region, a city or a post office.
+  const blockAnchors = [
+    '.wc-block-components-shipping-rates-control',
+    '.wp-block-woocommerce-checkout-shipping-methods-block',
+  ];
   const mount = () => {
+    if (wrap.isConnected) return true;
     const root = document.querySelector('#upwc-picker-root');
-    if (!root || root.__done) return false;
-    root.__done = true;
-    root.appendChild(wrap);
-    document.head.appendChild(style);
+    if (root) {
+      root.appendChild(wrap);
+    } else {
+      const anchor = blockAnchors
+        .map((sel) => document.querySelector(sel))
+        .find((n) => n && !n.closest('table'));
+      if (!anchor || !anchor.parentNode) return false;
+      anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
+    }
+    if (!style.isConnected) document.head.appendChild(style);
     applyGate();
     return true;
   };
@@ -213,26 +268,39 @@
     $('#upwc-pi').value = s.office_postindex;
     $('#upwc-pi').dataset.name = s.office_name || '';
     renderSum();
+    if (isChosen()) fillNative();
   };
 
+  // Mounting can happen more than once (Blocks throws the widget out of the DOM
+  // whenever it re-renders), so everything that must run exactly once - the
+  // listeners on our own nodes, the session replay, the region list - is kept
+  // behind its own latch. Re-binding on every remount used to be impossible,
+  // because there was no remount at all; with one, it would stack duplicate
+  // handlers on the same inputs.
+  let wired = false;
   const init = () => {
-    if (window.__upwcMounted) return;
     if (!mount()) return;
     window.__upwcMounted = true;
+    if (wired) return;
+    wired = true;
     bind();
     restore();
     api('upwc_regions').then((d) => { regions = (d && d.regions) || []; }).catch(() => {}).finally(() => { regionsReady = true; if ($('#upwc-region') === document.activeElement) renderRegions($('#upwc-region').value); });
   };
 
-  // The checkout fragment can re-render; (re)mount whenever WC updates it.
-  const boot = () => { window.__upwcMounted = false; init(); };
+  // The checkout fragment can re-render; (re)mount whenever it does. Blocks
+  // re-renders its whole tree through React and fires no jQuery event, so the
+  // observer - not `updated_checkout` - is what keeps the widget on the page.
+  const boot = () => {
+    init();
+    const root = document.querySelector('.wc-block-checkout, form.checkout') || document.body;
+    new MutationObserver(debounce(() => { init(); if (wrap.isConnected) applyGate(); }, 150))
+      .observe(root, { childList: true, subtree: true });
+  };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
   if (window.jQuery) {
-    window.jQuery(document.body).on('updated_checkout', () => {
-      if (!document.querySelector('#upwc-picker-root .upwc')) { window.__upwcMounted = false; init(); }
-      else applyGate();
-    });
+    window.jQuery(document.body).on('updated_checkout', () => { init(); applyGate(); });
     window.jQuery(document.body).on('change', 'input[name^="shipping_method"], select[name^="shipping_method"]', applyGate);
 
     // Ukrposhta bills a commission for cash-on-delivery, so the quote depends

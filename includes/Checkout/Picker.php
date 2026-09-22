@@ -42,12 +42,20 @@ class Picker {
 
 		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'save_order_meta' ) );
 		add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( $this, 'save_order_meta_blocks' ), 10, 1 );
+		add_action( 'woocommerce_store_api_checkout_order_processed', array( $this, 'validate_blocks' ), 10, 1 );
 	}
 
 	public function enqueue(): void {
 		// is_checkout() is still true on the "order received" page, where a
 		// picker would let the customer edit a choice that no longer matters.
-		if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || is_order_received_page() ) {
+		if ( ! function_exists( 'is_checkout' ) || is_order_received_page() ) {
+			return;
+		}
+		// The Checkout block can live on a page other than the one WooCommerce
+		// has configured as the checkout, and is_checkout() only knows the
+		// configured one - there the script was never enqueued at all.
+		$block_page = is_singular() && function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', get_queried_object_id() );
+		if ( ! is_checkout() && ! $block_page ) {
 			return;
 		}
 		$ver = UPWC_VERSION . '-' . (int) @filemtime( UPWC_DIR . 'assets/js/picker.js' );
@@ -230,6 +238,28 @@ class Picker {
 		$postindex = ( WC()->session ) ? (string) WC()->session->get( 'upwc_office_postindex', '' ) : '';
 		if ( '' === $postindex ) {
 			wc_add_notice( __( 'Please choose a region, a city and an Ukrposhta post office.', 'ukrposhta-shipping-for-woocommerce' ), 'error' );
+		}
+	}
+
+	/**
+	 * The same guard on the Blocks / Store API path. `woocommerce_checkout_process`
+	 * never fires there, so a Blocks order used to go through with no post office
+	 * at all and reached the merchant with nowhere to send the parcel.
+	 *
+	 * @param mixed $order Order object.
+	 */
+	public function validate_blocks( $order ): void {
+		unset( $order );
+		if ( ! self::selected() || ! class_exists( '\Automattic\WooCommerce\StoreApi\Exceptions\RouteException' ) ) {
+			return;
+		}
+		$postindex = ( function_exists( 'WC' ) && WC()->session ) ? (string) WC()->session->get( 'upwc_office_postindex', '' ) : '';
+		if ( '' === $postindex ) {
+			throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
+				'upwc_office_missing',
+				esc_html__( 'Please choose a region, a city and an Ukrposhta post office.', 'ukrposhta-shipping-for-woocommerce' ),
+				400
+			);
 		}
 	}
 
