@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, ukrposhta, ukraine, delivery
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,9 @@ Yes. The Address Classifier and tariff both require a Bearer issued by Ukrposhta
 The office picker targets the classic checkout. Order meta is also captured on the Store API (block) checkout path.
 
 == Changelog ==
+
+= 1.2.4 =
+* Fixed: after an Ukrposhta order WooCommerce saved the post office as the logged-in shopper's billing and shipping address (block and classic checkout), so the next checkout offered the office instead of the shopper's own address. The order still gets the office; the account keeps the shopper's address.
 
 = 1.2.3 =
 * Fixed: an office picked earlier no longer leaks into an order shipped by another method (courier, Nova Poshta) - such orders used to show an "Ukrposhta post office" row in the e-mails and on the order screen.

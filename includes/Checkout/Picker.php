@@ -43,6 +43,14 @@ class Picker {
 		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'save_order_meta' ) );
 		add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( $this, 'save_order_meta_blocks' ), 10, 1 );
 		add_action( 'woocommerce_store_api_checkout_order_processed', array( $this, 'validate_blocks' ), 10, 1 );
+
+		// The post office lands in the checkout address, and WooCommerce copies that
+		// into the buyer's account — keep the account's own address.
+		( new AccountGuard(
+			static function ( ?\WC_Order $order ): bool {
+				return $order ? self::order_uses( $order ) : self::selected();
+			}
+		) )->register_hooks();
 	}
 
 	public function enqueue(): void {
