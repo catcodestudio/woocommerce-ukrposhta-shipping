@@ -101,6 +101,56 @@
   const nativeNodes = (key) => ['shipping', 'billing']
     .map((g) => document.querySelector('#' + g + '_' + key) || document.querySelector('#' + g + '-' + key))
     .filter(Boolean);
+  // What the widget wrote into the buyer's address fields and what was there
+  // before: switching to another method puts the buyer's own values back, so
+  // a courier order does not leave with an Ukrposhta office as its street.
+  // One sessionStorage entry shared by the CatCode carrier widgets (Nova
+  // Poshta, Ukrposhta): when one takes over a field another one filled, it
+  // inherits the buyer's original value instead of the other carrier's branch.
+  // sessionStorage, because the classic checkout reloads.
+  const CLAIM_KEY = 'cc_carrier_addr';
+  const CLAIM_OWNER = 'ukrposhta';
+  const readClaims = () => {
+    try { return JSON.parse(window.sessionStorage.getItem(CLAIM_KEY) || '{}') || {}; } catch (e) { return {}; }
+  };
+  const writeClaims = (all) => {
+    try {
+      Object.keys(all).forEach((o) => { if (!all[o] || !Object.keys(all[o]).length) delete all[o]; });
+      if (Object.keys(all).length) window.sessionStorage.setItem(CLAIM_KEY, JSON.stringify(all));
+      else window.sessionStorage.removeItem(CLAIM_KEY);
+    } catch (e) { /* storage blocked - restore just won't survive a reload */ }
+  };
+  const claimNative = (node, v) => {
+    if (!node || !node.id || !v || node.value === v) return;
+    const all = readClaims();
+    const mine = all[CLAIM_OWNER] || (all[CLAIM_OWNER] = {});
+    const rec = mine[node.id];
+    // Re-snapshot only if the buyer typed over what we wrote last time.
+    if (!rec || rec.value !== node.value) {
+      let before = node.value;
+      Object.keys(all).forEach((o) => {
+        const other = o !== CLAIM_OWNER && all[o] && all[o][node.id];
+        if (other && other.value === node.value) before = other.before;
+      });
+      mine[node.id] = { before, value: v };
+    } else {
+      rec.value = v;
+    }
+    writeClaims(all);
+    setNative(node, v);
+  };
+  const releaseNative = () => {
+    const all = readClaims();
+    const mine = all[CLAIM_OWNER];
+    if (!mine || !Object.keys(mine).length) return;
+    Object.keys(mine).forEach((id) => {
+      const node = document.getElementById(id);
+      if (!node) return; // not rendered yet (Blocks) - next pass
+      if (node.value === mine[id].value) setNative(node, mine[id].before);
+      delete mine[id];
+    });
+    writeClaims(all);
+  };
   const fillNative = () => {
     // Nothing chosen yet: leave whatever the customer typed alone, otherwise the
     // fallback name would land in their street field before they picked anything.
@@ -110,7 +160,7 @@
       city: cityName || '',
       address_1: $('#upwc-pi').dataset.name || t.fallbackName,
     };
-    Object.keys(pairs).forEach((key) => nativeNodes(key).forEach((n) => setNative(n, pairs[key])));
+    Object.keys(pairs).forEach((key) => nativeNodes(key).forEach((n) => claimNative(n, pairs[key])));
   };
   const recalc = () => {
     if (window.jQuery) window.jQuery(document.body).trigger('update_checkout');
@@ -197,24 +247,44 @@
   // Only Ukrposhta orders need an office, so the widget stays out of the way
   // until the customer actually picks this shipping method.
   const methodId = cfg.methodId || 'ukrposhta';
+  // "ukrposhta:6" is ours; "ukrposhta:6:intl" goes abroad with no post office.
+  const isOurs = (v) => {
+    const s = String(v || '');
+    return (s === methodId || s.indexOf(methodId + ':') === 0) && !/:intl$/.test(s);
+  };
   const isChosen = () => {
     const inputs = document.querySelectorAll('input[name^="shipping_method"], select[name^="shipping_method"]');
     if (inputs.length) {
       let seen = false;
       for (const i of inputs) {
-        if (i.type === 'hidden') { seen = true; if (String(i.value).indexOf(methodId) === 0) return true; continue; }
+        if (i.type === 'hidden') { seen = true; if (isOurs(i.value)) return true; continue; }
         if (i.checked || i.tagName === 'SELECT') {
           seen = true;
-          if (String(i.value).indexOf(methodId) === 0) return true;
+          if (isOurs(i.value)) return true;
         }
       }
       if (seen) return false;
     }
     // Blocks names its radios `radio-control-...`, not `shipping_method[...]`,
-    // so the classic scan above finds nothing at all on that checkout.
-    const radio = document.querySelector('.wc-block-components-shipping-rates-control input[type="radio"]:checked, .wc-block-components-radio-control__input:checked');
-    if (radio) return String(radio.value).indexOf(methodId) === 0;
-    return true; // single available rate: WC prints no control
+    // so the classic scan above finds nothing at all on that checkout. Only the
+    // shipping-rates radios count: payment methods use the same classes.
+    const radio = document.querySelector('.wc-block-components-shipping-rates-control input[type="radio"]:checked');
+    if (radio) return isOurs(radio.value);
+    if (document.querySelector('.wc-block-checkout')) {
+      // A lone rate (or the Pickup tab) has no radio at all: ask the cart store
+      // instead of assuming it is ours - that assumption opened the widget and
+      // rewrote the address when the only rate was a courier.
+      try {
+        const store = window.wp && window.wp.data && window.wp.data.select('wc/store/cart');
+        const packages = (store && store.getShippingRates && store.getShippingRates()) || [];
+        for (const p of packages) {
+          const rate = (p.shipping_rates || []).find((r) => r.selected);
+          if (rate) return isOurs(rate.rate_id);
+        }
+      } catch (e) { /* no store */ }
+      return false;
+    }
+    return true; // classic, single available rate: WC prints no control
   };
   const applyGate = () => {
     const on = isChosen();
@@ -223,6 +293,7 @@
     // inputs on each render, so a value written once at pick time is gone by the
     // next one - and after a reload nothing wrote it at all.
     if (on) fillNative();
+    else releaseNative();
   };
 
   // The classic checkout gets a mount point from PHP (`woocommerce_*_order_notes`).

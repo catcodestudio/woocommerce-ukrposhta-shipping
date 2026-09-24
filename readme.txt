@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, ukrposhta, ukraine, delivery
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,11 @@ Yes. The Address Classifier and tariff both require a Bearer issued by Ukrposhta
 The office picker targets the classic checkout. Order meta is also captured on the Store API (block) checkout path.
 
 == Changelog ==
+
+= 1.2.3 =
+* Fixed: an office picked earlier no longer leaks into an order shipped by another method (courier, Nova Poshta) - such orders used to show an "Ukrposhta post office" row in the e-mails and on the order screen.
+* Fixed: on the block checkout, when the only available rate was another method, the picker still opened and wrote the office into the address fields; the chosen rate is now read from the cart. The international rate no longer opens the post-office picker either.
+* Switching from Ukrposhta to another method puts the shopper's own address back into the fields instead of the office.
 
 = 1.2.2 =
 * The post-office picker now works on the block-based Checkout (the "Checkout" block), where it did not appear at all: the customer chose "Ukrposhta" and had no way to pick a region, a city or an office. The widget mounted only into a container the classic checkout prints, read the chosen rate from classic `shipping_method` inputs that the block checkout does not have, wrote the address into classic `#shipping_*` field ids, and re-mounted only on jQuery's `updated_checkout`, which the block checkout never fires. All four now handle both checkouts.

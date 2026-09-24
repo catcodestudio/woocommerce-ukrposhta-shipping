@@ -265,6 +265,34 @@ class Picker {
 
 	// ---- persist to order ----
 
+	/**
+	 * Does this order ship with Ukrposhta to a post office? The office picked
+	 * earlier stays in the session after the buyer switches to another method,
+	 * so without this check a courier or Nova Poshta order carried an
+	 * "Ukrposhta post office" row in the e-mails and on the order screen.
+	 *
+	 * @param \WC_Order $order            Order.
+	 * @param bool      $session_fallback Use the session when the order has no shipping lines yet.
+	 */
+	public static function order_uses( $order, bool $session_fallback = true ): bool {
+		$items = $order->get_shipping_methods();
+		if ( ! $items ) {
+			return $session_fallback && self::selected();
+		}
+		// The international rate carries the same method id but has no office;
+		// it is only offered for a destination outside Ukraine.
+		$country = (string) $order->get_shipping_country();
+		if ( '' !== $country && 'UA' !== $country ) {
+			return false;
+		}
+		foreach ( $items as $item ) {
+			if ( 'ukrposhta' === $item->get_method_id() ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public function save_order_meta( int $order_id ): void {
 		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
 			return;
@@ -274,7 +302,7 @@ class Picker {
 			return;
 		}
 		$order = wc_get_order( $order_id );
-		if ( ! $order ) {
+		if ( ! $order || ! self::order_uses( $order ) ) {
 			return;
 		}
 		$order->update_meta_data( '_upwc_postindex', $postindex );
@@ -285,7 +313,7 @@ class Picker {
 
 	/** Blocks / Store API checkout path. */
 	public function save_order_meta_blocks( $order ): void {
-		if ( ! is_object( $order ) || ! function_exists( 'WC' ) || ! WC()->session ) {
+		if ( ! $order instanceof \WC_Order || ! function_exists( 'WC' ) || ! WC()->session || ! self::order_uses( $order ) ) {
 			return;
 		}
 		$postindex = (string) WC()->session->get( 'upwc_office_postindex', '' );
@@ -311,7 +339,8 @@ class Picker {
 			return $rows;
 		}
 		$office = (string) $order->get_meta( '_upwc_office' );
-		if ( '' === $office ) {
+		// Orders placed before the method check may carry a stale office.
+		if ( '' === $office || ! self::order_uses( $order, false ) ) {
 			return $rows;
 		}
 		$city      = (string) $order->get_meta( '_upwc_city' );
