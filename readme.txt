@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, ukrposhta, ukraine, delivery
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,9 @@ Yes. The Address Classifier and tariff both require a Bearer issued by Ukrposhta
 The office picker targets the classic checkout. Order meta is also captured on the Store API (block) checkout path.
 
 == Changelog ==
+
+= 1.2.6 =
+* Fixed: uninstalling the plugin now also removes its settings (woocommerce_ukrposhta_settings, including the API tokens) and the city search cache.
 
 = 1.2.5 =
 * Fixed: a guest who creates an account at checkout (or on the order confirmation page) no longer gets the post office as the new account's address.
