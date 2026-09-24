@@ -3,7 +3,7 @@
  * Plugin Name: Ukrposhta Shipping for WooCommerce
  * Plugin URI: https://catcode.com.ua/modules/ukrposhta-shipping-for-woocommerce/
  * Description: Ukrposhta delivery for WooCommerce: the customer picks region, city and post office at checkout from the official Address Classifier, and the delivery price is quoted live. Shipment (barcode) creation and sticker printing come in a later update.
- * Version: 1.2.6
+ * Version: 1.2.7
  * Requires at least: 5.6
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
@@ -21,7 +21,38 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'UPWC_VERSION', '1.2.6' );
+/*
+ * The free copy from wordpress.org (catcode-shipping-with-ukrposhta-for-woocommerce) lives in its own folder and
+ * ships the same classes. While it is loaded, this build does not load its own
+ * code next to it: it pauses, asks to deactivate the free copy and still declares
+ * the WooCommerce features it supports. The settings are shared, so nothing is lost.
+ */
+if ( defined( 'UPWC_FILE' ) && __FILE__ !== UPWC_FILE ) {
+	// Declared while paused too, or WooCommerce lists this build as incompatible.
+	add_action(
+		'before_woocommerce_init',
+		static function () {
+			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, true );
+			}
+		}
+	);
+	add_action(
+		'admin_notices',
+		static function () {
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				return;
+			}
+			echo '<div class="notice notice-warning"><p>'
+				. esc_html__( 'The Pro version of Ukrposhta Shipping is paused: the free copy "CatCode Shipping with Ukrposhta for WooCommerce" from WordPress.org is active and uses the same classes. Deactivate it and Pro takes over from the next page load. The settings stay. Deactivate the free copy, do not delete it: deleting it removes the shared settings and post office table.', 'ukrposhta-shipping-for-woocommerce' )
+				. '</p></div>';
+		}
+	);
+	return;
+}
+
+define( 'UPWC_VERSION', '1.2.7' );
 define( 'UPWC_FILE', __FILE__ );
 define( 'UPWC_DIR', plugin_dir_path( __FILE__ ) );
 define( 'UPWC_URL', plugin_dir_url( __FILE__ ) );
