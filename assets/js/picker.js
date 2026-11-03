@@ -14,7 +14,7 @@
   @media(max-width:600px){.upwc__grid{grid-template-columns:1fr;}}
   .upwc__field{position:relative;}
   .upwc__field label{display:block;font-size:12px;color:#71717a;margin-bottom:5px;}
-  .upwc__input{width:100%;height:42px;padding:0 12px;border:1px solid #e4e4e7;border-radius:10px;font-size:14px;background:#fff;color:#18181b;}
+  .upwc__input{width:100%;box-sizing:border-box;height:42px;padding:0 12px;border:1px solid #e4e4e7;border-radius:10px;font-size:14px;background:#fff;color:#18181b;}
   .upwc__input:focus{outline:none;border-color:var(--a);box-shadow:0 0 0 3px color-mix(in srgb,var(--a) 30%,transparent);}
   .upwc__input:disabled{background:#f4f4f5;color:#a1a1aa;}
   .upwc__menu{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:60;background:#fff;border:1px solid #e4e4e7;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.15);max-height:250px;overflow-y:auto;display:none;}
@@ -23,9 +23,7 @@
   .upwc__opt:hover,.upwc__opt.active{background:color-mix(in srgb,var(--a) 16%,transparent);}
   .upwc__opt small{display:block;color:#a1a1aa;font-size:12px;}
   .upwc__opt--muted{color:#a1a1aa;cursor:default;text-align:center;}
-  .upwc__pin{display:inline-block;font-weight:700;color:#0f1b3d;margin-right:6px;}
-  .upwc__sum{display:inline-flex;gap:8px;margin-top:12px;padding:8px 12px;font-size:13px;font-weight:600;background:color-mix(in srgb,var(--a) 16%,transparent);border-radius:9px;}
-  .upwc__sum[hidden]{display:none;}`;
+  .upwc__pin{display:inline-block;font-weight:700;color:#0f1b3d;margin-right:6px;}`;
 
   // Labels come from PHP so they go through the normal translation workflow.
   const t = Object.assign({
@@ -69,7 +67,6 @@
             <input type="hidden" id="upwc-pi">
           </div>
         </div>
-        <div class="upwc__sum" id="upwc-sum" hidden></div>
       </div>
     </div>`);
 
@@ -172,12 +169,6 @@
     } catch (e) { /* no Blocks store on this page */ }
   };
 
-  const renderSum = () => {
-    const s = $('#upwc-sum'), name = $('#upwc-pi').dataset.name || '', pi = $('#upwc-pi').value || '';
-    if (cityName && name) { s.innerHTML = `✓ ${cityName} — ${name} (${pi})`; s.hidden = false; }
-    else s.hidden = true;
-  };
-
   const renderRegions = (f) => {
     const m = $('#upwc-region-m'); const q = (f || '').trim().toLowerCase();
     const list = q ? regions.filter((r) => r.name.toLowerCase().includes(q)) : regions;
@@ -191,7 +182,7 @@
     cityId = ''; cityName = ''; cityDistrict = '';
     const ci = $('#upwc-city'); ci.disabled = false; ci.value = ''; ci.placeholder = t.cityReady;
     const oi = $('#upwc-office'); oi.disabled = true; oi.value = ''; oi.placeholder = t.officePh;
-    $('#upwc-pi').value = ''; $('#upwc-pi').dataset.name = ''; offices = []; renderSum();
+    $('#upwc-pi').value = ''; $('#upwc-pi').dataset.name = ''; offices = [];
   };
 
   const searchCities = debounce((q) => {
@@ -206,7 +197,7 @@
   const pickCity = (id, district, name) => {
     cityId = id; cityDistrict = district || ''; cityName = name; $('#upwc-city').value = name; close($('#upwc-city-m'));
     const oi = $('#upwc-office'); oi.disabled = false; oi.value = ''; oi.placeholder = t.loading;
-    $('#upwc-pi').value = ''; $('#upwc-pi').dataset.name = ''; offices = []; officesLoaded = false; renderSum(); fillNative();
+    $('#upwc-pi').value = ''; $('#upwc-pi').dataset.name = ''; offices = []; officesLoaded = false; fillNative();
     api('upwc_offices', { city_id: id, district_id: cityDistrict, region_id: regionId }).then((d) => {
       offices = (d && d.offices) || [];
     }).catch(() => { offices = []; }).finally(() => {
@@ -225,7 +216,7 @@
   };
   const pickOffice = (pi, name) => {
     $('#upwc-office').value = `${name} (${pi})`; $('#upwc-pi').value = pi; $('#upwc-pi').dataset.name = name;
-    close($('#upwc-office-m')); renderSum(); fillNative();
+    close($('#upwc-office-m')); fillNative();
     api('upwc_set', { region_id: regionId, region_name: regionName, city_id: cityId, city_name: cityName, office_postindex: pi, office_name: name }).then(recalc);
   };
 
@@ -236,7 +227,7 @@
     ri.addEventListener('focus', () => renderRegions(ri.value));
     ri.addEventListener('input', () => { regionId = ''; renderRegions(ri.value); });
     rm.addEventListener('click', (e) => { const o = e.target.closest('[data-id]'); if (o) pickRegion(o.dataset.id, o.dataset.name); });
-    ci.addEventListener('input', () => { const v = ci.value.trim(); cityId = ''; renderSum(); if (v.length < 2) { close(cm); return; } cm.innerHTML = muted(t.searching); open(cm); searchCities(v); });
+    ci.addEventListener('input', () => { const v = ci.value.trim(); cityId = ''; if (v.length < 2) { close(cm); return; } cm.innerHTML = muted(t.searching); open(cm); searchCities(v); });
     cm.addEventListener('click', (e) => { const o = e.target.closest('[data-id]'); if (o) pickCity(o.dataset.id, o.dataset.district, o.dataset.name); });
     oi.addEventListener('focus', () => { if (!oi.disabled) renderOffices(oi.value); });
     oi.addEventListener('input', () => renderOffices(oi.value));
@@ -338,7 +329,6 @@
     $('#upwc-office').disabled = false;
     $('#upwc-pi').value = s.office_postindex;
     $('#upwc-pi').dataset.name = s.office_name || '';
-    renderSum();
     if (isChosen()) fillNative();
   };
 
@@ -370,6 +360,13 @@
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
+  // Blocks: a click on another rate re-renders nothing the observer above
+  // reacts to in time — the Ukrposhta box stayed open over the Nova Poshta
+  // one. Its rate radios are `radio-control-…`, never `shipping_method[…]`.
+  document.addEventListener('change', (e) => {
+    const n = e.target;
+    if (n && n.closest && n.closest('.wc-block-components-shipping-rates-control') && wrap.isConnected) applyGate();
+  });
   if (window.jQuery) {
     window.jQuery(document.body).on('updated_checkout', () => { init(); applyGate(); });
     window.jQuery(document.body).on('change', 'input[name^="shipping_method"], select[name^="shipping_method"]', applyGate);

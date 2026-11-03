@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, ukrposhta, ukraine, delivery
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.7
+Stable tag: 1.2.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,13 @@ Yes. The Address Classifier and tariff both require a Bearer issued by Ukrposhta
 The office picker targets the classic checkout. Order meta is also captured on the Store API (block) checkout path.
 
 == Changelog ==
+
+= 1.2.9 =
+* Removed the extra line with the chosen post office under the fields: the city and post office are already visible in the fields.
+
+= 1.2.8 =
+* Fixed: on the block checkout, switching from Ukrposhta to Nova Poshta or another method no longer leaves the Ukrposhta box (region, city, post office) on the page above the other carrier's widget.
+* Fixed: the region, city and post office fields no longer stick out past the right edge of the box on themes that do not set box-sizing (the block checkout).
 
 = 1.2.7 =
 * Fixed: the Pro version activated next to the free copy from WordPress.org no longer loads the free copy's code with PHP warnings on every request. Pro pauses with a notice to deactivate the free copy, and WooCommerce no longer lists it as incompatible with HPOS.
