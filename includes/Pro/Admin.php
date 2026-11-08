@@ -315,13 +315,13 @@ class Admin {
 		if ( License::has_license() ) {
 			echo '<p>' . esc_html__( 'Licence:', 'ukrposhta-shipping-for-woocommerce' ) . ' <strong>' . esc_html( License::describe() ) . '</strong>';
 			$exp = License::expires_at();
-			if ( '' !== $exp && ! License::is_owned() ) {
+			if ( '' !== $exp && ! License::is_owned() && License::days_left() > 0 ) {
 				/* translators: %s: date. */
 				echo ' · ' . esc_html( sprintf( __( 'until %s', 'ukrposhta-shipping-for-woocommerce' ), date_i18n( get_option( 'date_format' ), (int) strtotime( $exp ) ) ) );
 			}
 			echo '</p>';
 			if ( ! $is_pro && License::is_trial_key() ) {
-				echo '<p>' . esc_html__( 'The trial has ended. Buy a licence to turn the Pro features back on — the settings are kept.', 'ukrposhta-shipping-for-woocommerce' ) . ' <a href="' . esc_url( License::MODULE_URL ) . '" target="_blank" rel="noopener">' . esc_html__( 'Buy Pro', 'ukrposhta-shipping-for-woocommerce' ) . '</a></p>';
+				echo '<p>' . esc_html__( 'The trial has ended. Buy a licence to turn the Pro features back on — the settings are kept.', 'ukrposhta-shipping-for-woocommerce' ) . '</p>';
 			}
 		} else {
 			echo '<p>' . esc_html__( 'Pro adds to the free picker and tariff:', 'ukrposhta-shipping-for-woocommerce' ) . '</p><ul>';

@@ -226,6 +226,10 @@ class License {
 			return __( 'active — the Pro features are on', 'ukrposhta-shipping-for-woocommerce' );
 		}
 
+		if ( self::is_trial_key() ) {
+			return __( 'the trial has ended', 'ukrposhta-shipping-for-woocommerce' );
+		}
+
 		if ( '' !== $checked_at ) {
 			/* translators: %s: date and time of the last check. */
 			return sprintf( __( 'not valid (last check %s)', 'ukrposhta-shipping-for-woocommerce' ), $checked_at );

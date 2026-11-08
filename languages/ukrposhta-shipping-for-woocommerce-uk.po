@@ -392,10 +392,6 @@ msgstr "до %s"
 msgid "The trial has ended. Buy a licence to turn the Pro features back on — the settings are kept."
 msgstr "Пробний період завершився. Купіть ліцензію, щоб знову увімкнути Pro — налаштування збережено."
 
-#: includes/Pro/Admin.php:324
-msgid "Buy Pro"
-msgstr "Купити Pro"
-
 #: includes/Pro/Admin.php:327
 msgid "Pro adds to the free picker and tariff:"
 msgstr "Pro додає до безкоштовного вибору відділення і тарифу:"
@@ -653,64 +649,68 @@ msgstr "пробний період активний"
 msgid "active — the Pro features are on"
 msgstr "активна — Pro-функції увімкнено"
 
+#: includes/Pro/License.php:230
+msgid "the trial has ended"
+msgstr "пробний період завершився"
+
 #. translators: %s: date and time of the last check.
-#: includes/Pro/License.php:231
+#: includes/Pro/License.php:235
 msgid "not valid (last check %s)"
 msgstr "недійсна (остання перевірка %s)"
 
-#: includes/Pro/License.php:243
+#: includes/Pro/License.php:247
 msgid "Key not found. Check that it was copied in full, without spaces."
 msgstr "Ключ не знайдено. Перевірте, що його скопійовано повністю, без пробілів."
 
-#: includes/Pro/License.php:244
+#: includes/Pro/License.php:248
 msgid "This key no longer works. If this is a mistake, write to support."
 msgstr "Цей ключ більше не діє. Якщо це помилка, напишіть у підтримку."
 
-#: includes/Pro/License.php:245
+#: includes/Pro/License.php:249
 msgid "The 7-day trial has ended. Buy a licence on catcode.com.ua to turn the Pro features back on."
 msgstr "7-денний пробний період завершився. Купіть ліцензію на catcode.com.ua, щоб знову увімкнути Pro."
 
-#: includes/Pro/License.php:246
+#: includes/Pro/License.php:250
 msgid "This key is already used on another shop. Release it there first."
 msgstr "Цей ключ уже використовується на іншому магазині. Спершу звільніть його там."
 
-#: includes/Pro/License.php:247
+#: includes/Pro/License.php:251
 msgid "This key belongs to another CatCode product, not to Ukrposhta Shipping."
 msgstr "Цей ключ від іншого продукту CatCode, не від Укрпошти."
 
-#: includes/Pro/License.php:248
+#: includes/Pro/License.php:252
 msgid "Could not reach our licence server. We will retry automatically in a few hours."
 msgstr "Не вдалося зв’язатися з нашим сервером ліцензій. Спробуємо ще раз автоматично за кілька годин."
 
-#: includes/Pro/License.php:249
+#: includes/Pro/License.php:253
 msgid "Enter a licence key."
 msgstr "Введіть ключ ліцензії."
 
-#: includes/Pro/License.php:250
+#: includes/Pro/License.php:254
 msgid "No key saved yet."
 msgstr "Ключ ще не збережено."
 
-#: includes/Pro/License.php:251
+#: includes/Pro/License.php:255
 msgid "Enter a valid e-mail address — the key will be sent there."
 msgstr "Введіть правильну адресу e-mail — ключ прийде туди."
 
-#: includes/Pro/License.php:252
+#: includes/Pro/License.php:256
 msgid "A trial has already been issued for this e-mail address."
 msgstr "Для цієї адреси пробний період уже видавався."
 
-#: includes/Pro/License.php:253
+#: includes/Pro/License.php:257
 msgid "The trial has already been used on this site — one per install."
 msgstr "На цьому сайті пробний період уже використано — один на встановлення."
 
-#: includes/Pro/License.php:254
+#: includes/Pro/License.php:258
 msgid "Too many attempts. Try again in an hour."
 msgstr "Забагато спроб. Спробуйте за годину."
 
-#: includes/Pro/License.php:255
+#: includes/Pro/License.php:259
 msgid "The server answered with something we could not read. Try again in a few minutes."
 msgstr "Сервер відповів незрозуміло. Спробуйте за кілька хвилин."
 
-#: includes/Pro/License.php:257
+#: includes/Pro/License.php:261
 msgid "This key does not fit."
 msgstr "Цей ключ не підходить."
 
