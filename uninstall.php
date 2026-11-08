@@ -22,6 +22,13 @@ delete_option( 'woocommerce_ukrposhta_settings' );
 delete_transient( 'upwc_regions' );
 
 wp_clear_scheduled_hook( 'upwc_poll_status' );
+// @pro-begin
+delete_option( 'upwc_license' );
+wp_clear_scheduled_hook( 'upwc_license_verify' );
+// The updater's cached answer (site transient upwc_upd_<hash>).
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '\_site\_transient\_upwc\_upd\_%' OR option_name LIKE '\_site\_transient\_timeout\_upwc\_upd\_%'" );
+// @pro-end
 
 // City search cache: one transient per region + query.
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching

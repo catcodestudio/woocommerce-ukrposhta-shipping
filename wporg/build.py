@@ -30,13 +30,49 @@ if os.path.isdir(dest):
     shutil.rmtree(dest)
 os.makedirs(dest)
 
+# Pro code never goes to wordpress.org: the includes/Pro folder, the Pro admin script
+# and every block between @pro-begin and @pro-end (licence, updater, Update URI).
+PRO_ONLY = ('includes/Pro', 'assets/js/pro-admin.js')
+
+
+def _skip_pro(dirpath, names):
+    rel = os.path.relpath(dirpath, SRC).replace(os.sep, '/')
+    return [n for n in names if (rel + '/' + n).lstrip('./') in PRO_ONLY or (rel == '.' and n in PRO_ONLY)]
+
+
 for item in COPY:
     s = os.path.join(SRC, item)
     d = os.path.join(dest, item)
     if os.path.isdir(s):
-        shutil.copytree(s, d)
+        shutil.copytree(s, d, ignore=_skip_pro)
     else:
         shutil.copy2(s, d)
+
+
+def _strip_pro(text):
+    out, skip = [], False
+    for line in text.split('\n'):
+        if '@pro-begin' in line:
+            skip = True
+            continue
+        if '@pro-end' in line:
+            skip = False
+            continue
+        if not skip and not line.startswith(' * Update URI:'):
+            out.append(line)
+    if skip:
+        raise SystemExit('unclosed @pro-begin')
+    return '\n'.join(out)
+
+
+for base, dirs, files in os.walk(dest):
+    for f in files:
+        if f.endswith(('.php', '.js', '.txt')):
+            p = os.path.join(base, f)
+            t = io.open(p, encoding='utf-8', newline='').read()
+            n = _strip_pro(t)
+            if n != t:
+                io.open(p, 'w', encoding='utf-8', newline='').write(n)
 
 # main file carries the slug in its name
 os.rename(os.path.join(dest, SHOP_SLUG + '.php'), os.path.join(dest, ORG_SLUG + '.php'))
@@ -78,6 +114,9 @@ FREE_NOTICE = ('The full version of this plugin from catcode.com.ua is active, s
 FREE_NOTICE_UK = ('Активна повна версія цього плагіна з catcode.com.ua, тому ця копія вимкнена, а повна версія '
                   'працює на тих самих налаштуваннях. «' + ORG_NAME + '» можна деактивувати або видалити: '
                   'її налаштування й дані лишаються, поки встановлена повна версія.')
+FREE_NOTICE_RU = ('Активна полная версия этого плагина с catcode.com.ua, поэтому эта копия выключена, а полная версия '
+                  'работает на тех же настройках. «' + ORG_NAME + '» можно деактивировать или удалить: '
+                  'её настройки и данные остаются, пока установлена полная версия.')
 SHOP_PAUSE_MSG = 'The Pro version of Ukrposhta Shipping is paused'
 SHOP_PAUSE_CL = '* Fixed: the Pro version activated next to the free copy from WordPress.org'
 FREE_CL = (
@@ -178,16 +217,17 @@ for f in sorted(os.listdir(langs)):
     for e in [e for e in cat if e.msgid.startswith(SHOP_PAUSE_MSG)]:
         cat.remove(e)
     if not cat.find(FREE_NOTICE):
-        cat.append(polib.POEntry(msgid=FREE_NOTICE, msgstr=FREE_NOTICE_UK if f.endswith('-uk.po') else '',
+        cat.append(polib.POEntry(msgid=FREE_NOTICE, msgstr=FREE_NOTICE_UK if f.endswith('-uk.po') else (FREE_NOTICE_RU if f.endswith('-ru_RU.po') else ''),
                                  occurrences=[(ORG_SLUG + '.php', '')]))
     io.open(p, 'w', encoding='utf-8', newline='\n').write(str(cat) + '\n')
 
 # the compiled catalogue stores the domain in its header; rebuild it from the .po
 sys.path.insert(0, HERE)
-from mo import compile_po  # noqa: E402
 
-po = os.path.join(langs, ORG_SLUG + '-uk.po')
-compile_po(po, po[:-3] + '.mo')
+for f in sorted(os.listdir(langs)):
+    if f.endswith('.po'):
+        po = os.path.join(langs, f)
+        polib.pofile(po).save_as_mofile(po[:-3] + '.mo')
 
 version = ''
 main = io.open(os.path.join(dest, ORG_SLUG + '.php'), encoding='utf-8').read()
@@ -195,6 +235,17 @@ for line in main.splitlines():
     if line.strip().startswith('* Version:'):
         version = line.split(':', 1)[1].strip()
         break
+
+for base, dirs, files in os.walk(dest):
+    for f in files:
+        if f.endswith('.php'):
+            t = io.open(os.path.join(base, f), encoding='utf-8').read()
+            for bad in ('Pro\\', 'UPWC_Updater', 'Update URI', 'catcode/v1/license'):
+                if bad in t:
+                    raise SystemExit('Pro code left in the wp.org build: %s in %s' % (bad, f))
+for d in ('includes/Pro',):
+    if os.path.exists(os.path.join(dest, d)):
+        raise SystemExit('Pro folder left in the wp.org build')
 
 out = os.path.join(HERE, '%s-%s.zip' % (ORG_SLUG, version))
 with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:

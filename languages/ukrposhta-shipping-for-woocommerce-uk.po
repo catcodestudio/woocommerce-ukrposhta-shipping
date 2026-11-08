@@ -1,5 +1,4 @@
-# Ukrainian translation for the Ukrposhta Shipping for WooCommerce plugin.
-# Copyright (C) CatCode
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Ukrposhta Shipping for WooCommerce\n"
@@ -11,146 +10,1061 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11) ? 0 : ((n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20)) ? 1 : 2);\n"
 "X-Domain: ukrposhta-shipping-for-woocommerce\n"
 
+#. Plugin Name of the plugin
+#: ukrposhta-shipping-for-woocommerce.php
+msgid "Ukrposhta Shipping for WooCommerce"
+msgstr "Ukrposhta Shipping for WooCommerce"
+
+#. Plugin URI of the plugin
+#: ukrposhta-shipping-for-woocommerce.php
+msgid "https://catcode.com.ua/modules/ukrposhta-shipping-for-woocommerce/"
+msgstr "https://catcode.com.ua/modules/ukrposhta-shipping-for-woocommerce/"
+
+#. Description of the plugin
+#: ukrposhta-shipping-for-woocommerce.php
+msgid "Ukrposhta delivery for WooCommerce: the customer picks region, city and post office at checkout from the official Address Classifier, and the delivery price is quoted live. Pro: shipments with cash on delivery, labels, form 103a and delivery statuses."
+msgstr "Доставка Укрпоштою для WooCommerce: покупець обирає область, місто і відділення в чекауті з офіційного Адресного класифікатора, вартість доставки рахується наживо. Pro: відправлення з післяплатою, ярлики, форма 103а і статуси доставки."
+
+#. Author of the plugin
+#: ukrposhta-shipping-for-woocommerce.php
+msgid "CatCode"
+msgstr "CatCode"
+
+#. Author URI of the plugin
+#: ukrposhta-shipping-for-woocommerce.php
+msgid "https://catcode.com.ua"
+msgstr "https://catcode.com.ua"
+
+#: includes/Admin/OrderMetaBox.php:34 includes/Checkout/Picker.php:118 includes/Pro/Admin.php:549 includes/Pro/Admin.php:654 includes/Pro/Admin.php:658 includes/Shipping/Method.php:22 includes/Shipping/Method.php:33
 msgid "Ukrposhta"
 msgstr "Укрпошта"
 
-msgid "Ukrposhta delivery: the customer picks a post office at checkout (region -> city -> office) and the tariff is quoted live."
-msgstr "Доставка Укрпоштою: вибір відділення в чекауті (область→місто→відділення) та розрахунок тарифу."
-
-msgid "Enable"
-msgstr "Увімкнути"
-
-msgid "Show Ukrposhta at checkout"
-msgstr "Показувати «Укрпошта» в чекауті"
-
-msgid "Method title"
-msgstr "Назва методу"
-
-msgid "Ukrposhta - delivery to a post office"
-msgstr "Укрпошта — доставка у відділення"
-
-msgid "Test environment"
-msgstr "Тестове середовище"
-
-msgid "Sandbox (dev.ukrposhta.ua)"
-msgstr "Sandbox (dev.ukrposhta.ua)"
-
-msgid "Bearer eCom"
-msgstr "Bearer eCom"
-
-msgid "Issued by Ukrposhta once your eCom contract is signed. Needed for both the address classifier and the tariff. Stored encrypted. Leave empty to keep the current key."
-msgstr "Видається Укрпоштою після договору. Потрібен для класифікатора адрес і тарифу. Зберігається зашифровано. Залиште порожнім, щоб не змінювати."
-
-msgid "Sender post index"
-msgstr "Індекс відправника"
-
-msgid "Post index the parcels are sent from. Required for the tariff."
-msgstr "Поштовий індекс складу відправлення — потрібен для тарифу."
-
-msgid "Service type"
-msgstr "Тип послуги"
-
-msgid "Ukrposhta Standard"
-msgstr "Укрпошта Стандарт"
-
-msgid "Ukrposhta Express"
-msgstr "Укрпошта Express"
-
-msgid "Fallback rate, UAH"
-msgstr "Тариф за замовчуванням, грн"
-
-msgid "Used when the API is unreachable or no recipient index has been chosen yet."
-msgstr "Використовується, коли API недоступний або немає індексу отримувача."
-
-msgid "Free shipping from, UAH"
-msgstr "Безкоштовно від суми, грн"
-
-msgid "0 disables it."
-msgstr "0 — вимкнено."
-
-msgid "Declared value"
-msgstr "Оголошена цінність"
-
-msgid "Send the order total as the declared value"
-msgstr "Передавати суму замовлення як оголошену цінність"
-
-msgid "Ukrposhta charges a percentage for this: the quote gets higher, but the parcel is insured."
-msgstr "Укрпошта бере за це відсоток — тариф у чекауті буде вищим, зате посилка застрахована."
-
-msgid "Cash-on-delivery payment methods"
-msgstr "Способи оплати = післяплата"
-
-msgid "Comma-separated payment method IDs. For these the Ukrposhta cash-on-delivery commission is added to the tariff. The standard WooCommerce method is <code>cod</code>."
-msgstr "ID платіжних методів через кому. Для них у тариф додається комісія Укрпошти за післяплату. Стандартний метод WooCommerce — <code>cod</code>."
-
-msgid "Widget accent colour"
-msgstr "Акцентний колір віджета"
-
-msgid "Please choose a region, a city and an Ukrposhta post office."
-msgstr "Оберіть область, місто і відділення Укрпошти."
-
-msgid "Ukrposhta post office:"
-msgstr "Відділення Укрпошти:"
-
+#: includes/Admin/OrderMetaBox.php:58
 msgid "Ukrposhta was not chosen for this order."
 msgstr "Для цього замовлення Укрпошту не обирали."
 
+#: includes/Admin/OrderMetaBox.php:63
 msgid "City:"
 msgstr "Місто:"
 
+#: includes/Admin/OrderMetaBox.php:65
 msgid "Post office:"
 msgstr "Відділення:"
 
+#: includes/Admin/OrderMetaBox.php:67
 msgid "Post index:"
 msgstr "Індекс:"
 
-msgid "Ukrposhta Shipping for WooCommerce requires an active WooCommerce installation."
-msgstr "Для роботи плагіна потрібен активний WooCommerce."
-
+#: includes/Checkout/Picker.php:102 includes/Pro/Customer.php:45 includes/Pro/Customer.php:59
 msgid "Ukrposhta delivery"
 msgstr "Доставка Укрпоштою"
 
+#: includes/Checkout/Picker.php:103
 msgid "Region"
 msgstr "Область"
 
+#: includes/Checkout/Picker.php:104
 msgid "Choose a region…"
 msgstr "Оберіть область…"
 
+#: includes/Checkout/Picker.php:105
 msgid "City"
 msgstr "Місто"
 
+#: includes/Checkout/Picker.php:106
 msgid "Choose a region first"
 msgstr "Спочатку оберіть область"
 
+#: includes/Checkout/Picker.php:107
 msgid "Start typing the name…"
 msgstr "Почніть вводити назву…"
 
+#: includes/Checkout/Picker.php:108
 msgid "Post office"
 msgstr "Відділення"
 
+#: includes/Checkout/Picker.php:109
 msgid "Choose a city first"
 msgstr "Спочатку оберіть місто"
 
+#: includes/Checkout/Picker.php:110
 msgid "Pick a post office or an index…"
 msgstr "Оберіть відділення або індекс…"
 
+#: includes/Checkout/Picker.php:111
 msgid "Searching…"
 msgstr "Пошук…"
 
+#: includes/Checkout/Picker.php:112
 msgid "Loading…"
 msgstr "Завантаження…"
 
+#: includes/Checkout/Picker.php:113
 msgid "Loading regions…"
 msgstr "Завантаження областей…"
 
+#: includes/Checkout/Picker.php:114
 msgid "Regions are unavailable. Check the connection to Ukrposhta."
 msgstr "Області недоступні. Перевірте підключення до Укрпошти."
 
+#: includes/Checkout/Picker.php:115 includes/Checkout/Picker.php:116
 msgid "Nothing found"
 msgstr "Нічого не знайдено"
 
+#: includes/Checkout/Picker.php:117
 msgid "No post offices here"
 msgstr "Відділень немає"
 
+#: includes/Checkout/Picker.php:248 includes/Checkout/Picker.php:268
+msgid "Please choose a region, a city and an Ukrposhta post office."
+msgstr "Оберіть область, місто і відділення Укрпошти."
+
+#: includes/Checkout/Picker.php:358
+msgid "Ukrposhta post office:"
+msgstr "Відділення Укрпошти:"
+
+#: includes/Pro/Admin.php:64
+msgid "Pro: shipments, labels, tracking"
+msgstr "Pro: відправлення, ярлики, трекінг"
+
+#: includes/Pro/Admin.php:66
+msgid "Shipment creation, cash on delivery, labels, the form 103a registry and delivery statuses open with a Pro licence or the 7-day trial — see the licence box at the top of this page. Everything above keeps working without it."
+msgstr "Створення відправлень, післяплата, ярлики, реєстр форми 103а і статуси доставки відкриваються з Pro-ліцензією або 7-денним пробним періодом — блок ліцензії вгорі сторінки. Усе, що вище, працює і без неї."
+
+#: includes/Pro/Admin.php:71
+msgid "Do not change"
+msgstr "Не змінювати"
+
+#: includes/Pro/Admin.php:78
+msgid "Pro: shipments"
+msgstr "Pro: відправлення"
+
+#: includes/Pro/Admin.php:80
+msgid "For shipments Ukrposhta issues a counterparty token together with the Bearer key once the contract is signed."
+msgstr "Для відправлень Укрпошта разом із Bearer-ключем видає токен контрагента після підписання договору."
+
+#: includes/Pro/Admin.php:83
+msgid "Counterparty token (user token)"
+msgstr "Токен контрагента (user token)"
+
+#: includes/Pro/Admin.php:85
+msgid "PROD_COUNTERPARTY TOKEN from the access table of the contract (SAND_COUNTERPARTY TOKEN for the sandbox). Stored encrypted. Leave empty to keep the current one."
+msgstr "PROD_COUNTERPARTY TOKEN з таблиці доступів до договору (SAND_COUNTERPARTY TOKEN для тестового середовища). Зберігається зашифровано. Залиште порожнім, щоб не змінювати."
+
+#: includes/Pro/Admin.php:89
+msgid "Bearer StatusTracking"
+msgstr "Bearer StatusTracking"
+
+#: includes/Pro/Admin.php:91
+msgid "For delivery statuses. Empty — the Bearer eCom key is used. Stored encrypted."
+msgstr "Для статусів доставки. Порожньо — береться Bearer eCom. Зберігається зашифровано."
+
+#: includes/Pro/Admin.php:95
+msgid "Sender type"
+msgstr "Тип відправника"
+
+#: includes/Pro/Admin.php:98
+msgid "Individual"
+msgstr "Фізична особа"
+
+#: includes/Pro/Admin.php:99
+msgid "Private entrepreneur (FOP)"
+msgstr "ФОП"
+
+#: includes/Pro/Admin.php:100
+msgid "Company"
+msgstr "Юридична особа"
+
+#: includes/Pro/Admin.php:105
+msgid "Sender last name"
+msgstr "Прізвище відправника"
+
+#: includes/Pro/Admin.php:110
+msgid "Sender first name"
+msgstr "Ім'я відправника"
+
+#: includes/Pro/Admin.php:115
+msgid "Sender middle name"
+msgstr "По батькові відправника"
+
+#: includes/Pro/Admin.php:117
+msgid "Required by Ukrposhta for cash on delivery to an individual sender."
+msgstr "Укрпошта вимагає його для післяплати, коли відправник — фізична особа."
+
+#: includes/Pro/Admin.php:121
+msgid "Company or FOP name"
+msgstr "Назва компанії або ФОП"
+
+#: includes/Pro/Admin.php:123
+msgid "For a company sender."
+msgstr "Для відправника-компанії."
+
+#: includes/Pro/Admin.php:127
+msgid "EDRPOU / tax number"
+msgstr "ЄДРПОУ / ІПН"
+
+#: includes/Pro/Admin.php:129
+msgid "EDRPOU for a company, the 10-digit tax number for a FOP."
+msgstr "ЄДРПОУ для компанії, 10-значний ІПН для ФОП."
+
+#: includes/Pro/Admin.php:133
+msgid "Sender phone"
+msgstr "Телефон відправника"
+
+#: includes/Pro/Admin.php:138
+msgid "IBAN for cash on delivery"
+msgstr "IBAN для післяплати"
+
+#: includes/Pro/Admin.php:140
+msgid "For a FOP or a company: the cash on delivery is transferred to this account. An individual receives it at the post office."
+msgstr "Для ФОП або компанії: післяплата переказується на цей рахунок. Фізична особа отримує її у відділенні."
+
+#: includes/Pro/Admin.php:144
+msgid "Sender ID at Ukrposhta"
+msgstr "ID відправника в Укрпошті"
+
+#: includes/Pro/Admin.php:146
+msgid "Filled in by the \"Create sender\" button above. If you already have a sender uuid from Ukrposhta, paste it here."
+msgstr "Заповнюється кнопкою «Створити відправника» вгорі. Якщо uuid відправника від Укрпошти у вас уже є, вставте його сюди."
+
+#: includes/Pro/Admin.php:150
+msgid "Who pays for delivery"
+msgstr "Хто платить за доставку"
+
+#: includes/Pro/Admin.php:153
+msgid "The recipient, at the post office"
+msgstr "Отримувач, у відділенні"
+
+#: includes/Pro/Admin.php:154
+msgid "The shop (sender)"
+msgstr "Магазин (відправник)"
+
+#: includes/Pro/Admin.php:159 includes/Pro/Admin.php:483 includes/Pro/Admin.php:506
+msgid "Cash on delivery"
+msgstr "Післяплата"
+
+#: includes/Pro/Admin.php:161
+msgid "Add cash on delivery to the shipment for orders paid on collection"
+msgstr "Додавати післяплату у відправлення для замовлень з оплатою при отриманні"
+
+#: includes/Pro/Admin.php:162
+msgid "The payment methods are the ones in \"Cash-on-delivery payment methods\" above."
+msgstr "Способи оплати — ті, що в полі «Способи оплати = післяплата» вище."
+
+#: includes/Pro/Admin.php:166
+msgid "Cash on delivery amount"
+msgstr "Сума післяплати"
+
+#: includes/Pro/Admin.php:169
+msgid "Order total"
+msgstr "Сума замовлення"
+
+#: includes/Pro/Admin.php:170
+msgid "Goods only, without shipping"
+msgstr "Лише товари, без доставки"
+
+#: includes/Pro/Admin.php:175
+msgid "Cash on delivery fee"
+msgstr "Комісія за післяплату"
+
+#: includes/Pro/Admin.php:178
+msgid "Paid by the recipient"
+msgstr "Платить отримувач"
+
+#: includes/Pro/Admin.php:179
+msgid "Paid by the shop"
+msgstr "Платить магазин"
+
+#: includes/Pro/Admin.php:184
+msgid "Weight when products have none, kg"
+msgstr "Вага, якщо в товарів її немає, кг"
+
+#: includes/Pro/Admin.php:189
+msgid "Parcel length, cm"
+msgstr "Довжина посилки, см"
+
+#: includes/Pro/Admin.php:194
+msgid "Parcel width, cm"
+msgstr "Ширина посилки, см"
+
+#: includes/Pro/Admin.php:199
+msgid "Parcel height, cm"
+msgstr "Висота посилки, см"
+
+#: includes/Pro/Admin.php:204
+msgid "If the recipient does not collect it"
+msgstr "Якщо отримувач не забрав"
+
+#: includes/Pro/Admin.php:207
+msgid "Return to the sender"
+msgstr "Повернути відправнику"
+
+#: includes/Pro/Admin.php:208
+msgid "Return after 7 days of storage"
+msgstr "Повернути після 7 днів зберігання"
+
+#: includes/Pro/Admin.php:209
+msgid "Treat as a refusal"
+msgstr "Вважати відмовою"
+
+#: includes/Pro/Admin.php:214
+msgid "SMS to the recipient"
+msgstr "SMS отримувачу"
+
+#: includes/Pro/Admin.php:216
+msgid "Ukrposhta sends an SMS when the parcel arrives"
+msgstr "Укрпошта надсилає SMS, коли посилка прибуде"
+
+#: includes/Pro/Admin.php:220
+msgid "Label format"
+msgstr "Формат ярлика"
+
+#: includes/Pro/Admin.php:223
+msgid "100x100 mm (label printer)"
+msgstr "100×100 мм (термопринтер)"
+
+#: includes/Pro/Admin.php:224
+msgid "A4 sheet"
+msgstr "Аркуш A4"
+
+#: includes/Pro/Admin.php:225
+msgid "A5 sheet"
+msgstr "Аркуш A5"
+
+#: includes/Pro/Admin.php:230
+msgid "Delivery statuses"
+msgstr "Статуси доставки"
+
+#: includes/Pro/Admin.php:232
+msgid "Check the statuses of open shipments every hour"
+msgstr "Перевіряти статуси відкритих відправлень щогодини"
+
+#: includes/Pro/Admin.php:236
+msgid "Order status when delivered"
+msgstr "Статус замовлення після вручення"
+
+#: includes/Pro/Admin.php:242
+msgid "Order status when returned"
+msgstr "Статус замовлення після повернення"
+
+#: includes/Pro/Admin.php:248
+msgid "Tracking for the customer"
+msgstr "Трекінг для покупця"
+
+#: includes/Pro/Admin.php:250
+msgid "Show the tracking number and link in the order e-mails and the customer account"
+msgstr "Показувати номер і посилання для відстеження в листах і в кабінеті покупця"
+
+#: includes/Pro/Admin.php:282
+msgid "Working…"
+msgstr "Виконується…"
+
+#: includes/Pro/Admin.php:283
+msgid "No answer from the server. Check the connection and try again."
+msgstr "Сервер не відповів. Перевірте з’єднання і спробуйте ще раз."
+
+#: includes/Pro/Admin.php:284
+msgid "Delete this shipment at Ukrposhta?"
+msgstr "Видалити це відправлення в Укрпошті?"
+
+#: includes/Pro/Admin.php:312
+msgid "Ukrposhta Pro"
+msgstr "Укрпошта Pro"
+
+#: includes/Pro/Admin.php:313
+msgid "Pro is on"
+msgstr "Pro увімкнено"
+
+#: includes/Pro/Admin.php:313
+msgid "Free"
+msgstr "Free"
+
+#: includes/Pro/Admin.php:316
+msgid "Licence:"
+msgstr "Ліцензія:"
+
+#. translators: %s: date.
+#: includes/Pro/Admin.php:320
+msgid "until %s"
+msgstr "до %s"
+
+#: includes/Pro/Admin.php:324
+msgid "The trial has ended. Buy a licence to turn the Pro features back on — the settings are kept."
+msgstr "Пробний період завершився. Купіть ліцензію, щоб знову увімкнути Pro — налаштування збережено."
+
+#: includes/Pro/Admin.php:324
+msgid "Buy Pro"
+msgstr "Купити Pro"
+
+#: includes/Pro/Admin.php:327
+msgid "Pro adds to the free picker and tariff:"
+msgstr "Pro додає до безкоштовного вибору відділення і тарифу:"
+
+#: includes/Pro/Admin.php:335
+msgid "Activate key"
+msgstr "Активувати ключ"
+
+#: includes/Pro/Admin.php:337
+msgid "Check again"
+msgstr "Перевірити ще раз"
+
+#: includes/Pro/Admin.php:338
+msgid "Release the key on this site"
+msgstr "Звільнити ключ на цьому сайті"
+
+#: includes/Pro/Admin.php:343
+msgid "E-mail for the trial key"
+msgstr "E-mail для пробного ключа"
+
+#: includes/Pro/Admin.php:344
+msgid "Try Pro for 7 days"
+msgstr "Спробувати Pro 7 днів"
+
+#: includes/Pro/Admin.php:346
+msgid "Buy a licence"
+msgstr "Купити ліцензію"
+
+#: includes/Pro/Admin.php:351
+msgid "Before the first shipment:"
+msgstr "Перед першим відправленням:"
+
+#: includes/Pro/Admin.php:353
+msgid "Create sender"
+msgstr "Створити відправника"
+
+#: includes/Pro/Admin.php:353
+msgid "Uses the saved sender details below; save the settings first."
+msgstr "Бере збережені дані відправника нижче — спершу збережіть налаштування."
+
+#: includes/Pro/Admin.php:367 includes/Pro/Admin.php:540
+msgid "You are not allowed to do this."
+msgstr "У вас немає прав на цю дію."
+
+#: includes/Pro/Admin.php:375 includes/Pro/Admin.php:392
+msgid "The licence is active — the Pro features are on."
+msgstr "Ліцензія активна — Pro-функції увімкнено."
+
+#. translators: %s: date.
+#: includes/Pro/Admin.php:386
+msgid "The trial has started — Pro works until %s. The key has also been e-mailed to you."
+msgstr "Пробний період почався — Pro працює до %s. Ключ також надіслано вам на пошту."
+
+#: includes/Pro/Admin.php:387
+msgid "The trial has started. The key has also been e-mailed to you."
+msgstr "Пробний період почався. Ключ також надіслано вам на пошту."
+
+#: includes/Pro/Admin.php:396
+msgid "The key is released on this site. The free features keep working."
+msgstr "Ключ звільнено на цьому сайті. Безкоштовні функції працюють далі."
+
+#: includes/Pro/Admin.php:400 includes/Pro/Shipments.php:272
+msgid "Creating shipments is a Pro feature."
+msgstr "Створення відправлень — функція Pro."
+
+#: includes/Pro/Admin.php:411
+msgid "Order not found."
+msgstr "Замовлення не знайдено."
+
+#. translators: %s: status.
+#: includes/Pro/Admin.php:425
+msgid "Status updated: %s"
+msgstr "Статус оновлено: %s"
+
+#: includes/Pro/Admin.php:426
+msgid "No new status yet. Ukrposhta shows a shipment after it is accepted at the post office."
+msgstr "Нового статусу поки немає. Укрпошта показує відправлення після приймання у відділенні."
+
+#: includes/Pro/Admin.php:455
+msgid "Ukrposhta shipment"
+msgstr "Відправлення Укрпошти"
+
+#: includes/Pro/Admin.php:467 includes/Pro/Shipments.php:287
+msgid "No Ukrposhta post office was picked for this order."
+msgstr "Для цього замовлення не обрано відділення Укрпошти."
+
+#: includes/Pro/Admin.php:471
+msgid "Shipment creation, labels and delivery statuses are part of Pro. Start the 7-day trial or enter a key in the Ukrposhta settings."
+msgstr "Створення відправлень, ярлики і статуси доставки — частина Pro. Запустіть 7-денний пробний період або введіть ключ у налаштуваннях Укрпошти."
+
+#: includes/Pro/Admin.php:472
+msgid "Open the settings"
+msgstr "Відкрити налаштування"
+
+#: includes/Pro/Admin.php:481
+msgid "Weight"
+msgstr "Вага"
+
+#: includes/Pro/Admin.php:481
+msgid "kg"
+msgstr "кг"
+
+#: includes/Pro/Admin.php:482 includes/Shipping/Method.php:92
+msgid "Declared value"
+msgstr "Оголошена цінність"
+
+#: includes/Pro/Admin.php:483
+msgid "no"
+msgstr "ні"
+
+#: includes/Pro/Admin.php:493
+msgid "Create shipment"
+msgstr "Створити відправлення"
+
+#: includes/Pro/Admin.php:498
+msgid "Barcode"
+msgstr "ШКІ (номер)"
+
+#: includes/Pro/Admin.php:499
+msgid "Status"
+msgstr "Статус"
+
+#: includes/Pro/Admin.php:502
+msgid "Delivery by Ukrposhta"
+msgstr "Доставка за тарифом Укрпошти"
+
+#: includes/Pro/Admin.php:509
+msgid "Label (PDF)"
+msgstr "Ярлик (PDF)"
+
+#: includes/Pro/Admin.php:510
+msgid "Update status"
+msgstr "Оновити статус"
+
+#: includes/Pro/Admin.php:512
+msgid "Delete shipment"
+msgstr "Видалити відправлення"
+
+#: includes/Pro/Admin.php:548
+msgid "Back"
+msgstr "Назад"
+
+#: includes/Pro/Admin.php:571
+msgid "Ukrposhta: create shipments"
+msgstr "Укрпошта: створити відправлення"
+
+#: includes/Pro/Admin.php:572
+msgid "Ukrposhta: print labels"
+msgstr "Укрпошта: надрукувати ярлики"
+
+#: includes/Pro/Admin.php:573
+msgid "Ukrposhta: form 103a registry"
+msgstr "Укрпошта: реєстр ф. 103а"
+
+#: includes/Pro/Admin.php:574
+msgid "Ukrposhta: update statuses"
+msgstr "Укрпошта: оновити статуси"
+
+#. translators: %s: order number.
+#: includes/Pro/Admin.php:604
+msgid "#%s: not a Ukrposhta order"
+msgstr "#%s: не замовлення Укрпошти"
+
+#. translators: %d: number of orders.
+#: includes/Pro/Admin.php:629
+msgid "Ukrposhta: status changed in %d order."
+msgid_plural "Ukrposhta: status changed in %d orders."
+msgstr[0] "Укрпошта: статус змінився в %d замовленні."
+msgstr[1] "Укрпошта: статус змінився в %d замовленнях."
+msgstr[2] "Укрпошта: статус змінився в %d замовленнях."
+
+#. translators: %d: number of shipments.
+#: includes/Pro/Admin.php:632
+msgid "Ukrposhta: %d shipment created."
+msgid_plural "Ukrposhta: %d shipments created."
+msgstr[0] "Укрпошта: створено %d відправлення."
+msgstr[1] "Укрпошта: створено %d відправлення."
+msgstr[2] "Укрпошта: створено %d відправлень."
+
+#: includes/Pro/Admin.php:692
+msgid "no shipment yet"
+msgstr "відправлення ще немає"
+
+#. translators: 1: barcode, 2: tracking link.
+#: includes/Pro/Customer.php:42
+msgid "Ukrposhta tracking number: %1$s — %2$s"
+msgstr "Номер відстеження Укрпошти: %1$s — %2$s"
+
+#. translators: %s: barcode link.
+#: includes/Pro/Customer.php:47 includes/Pro/Customer.php:61
+msgid "Tracking number: %s"
+msgstr "Номер для відстеження: %s"
+
+#: includes/Pro/Customer.php:63
+msgid "Status:"
+msgstr "Статус:"
+
+#: includes/Pro/License.php:80
+msgid "Shipment (barcode) from the order in one click: recipient, post office, weight, declared value"
+msgstr "Відправлення (ШКІ) із замовлення в один клік: отримувач, відділення, вага, оголошена цінність"
+
+#: includes/Pro/License.php:81
+msgid "Cash on delivery in the shipment for orders paid on collection"
+msgstr "Післяплата у відправленні для замовлень з оплатою при отриманні"
+
+#: includes/Pro/License.php:82
+msgid "Address labels 100x100, A4 or A5 as PDF, one by one or for many orders at once"
+msgstr "Адресні ярлики 100×100, A4 або A5 у PDF — по одному або для багатьох замовлень разом"
+
+#: includes/Pro/License.php:83
+msgid "Bulk actions in the order list: create shipments and print labels"
+msgstr "Масові дії у списку замовлень: створити відправлення і надрукувати ярлики"
+
+#: includes/Pro/License.php:84
+msgid "Form 103a registry for handing a batch of parcels over at the post office"
+msgstr "Реєстр форми 103а, щоб здати партію посилок у відділенні"
+
+#: includes/Pro/License.php:85
+msgid "Delivery statuses in the order and the order completed on delivery"
+msgstr "Статуси доставки в замовленні, після вручення замовлення стає виконаним"
+
+#: includes/Pro/License.php:86
+msgid "Tracking number and link in the customer e-mails and the customer account"
+msgstr "Номер і посилання для відстеження в листах і в кабінеті покупця"
+
+#: includes/Pro/License.php:87
+msgid "Delete a shipment before it is handed over at the post office"
+msgstr "Видалення відправлення, доки його не здали у відділенні"
+
+#: includes/Pro/License.php:208
+msgid "not checked yet"
+msgstr "ще не перевірено"
+
+#: includes/Pro/License.php:213
+msgid "purchased — the Pro features are yours for good"
+msgstr "куплено — Pro-функції ваші назавжди"
+
+#: includes/Pro/License.php:214
+msgid "purchased — the Pro features are yours for good; the updates and support term has ended"
+msgstr "куплено — Pro-функції ваші назавжди; строк оновлень і підтримки завершився"
+
+#. translators: %d: days left in the trial.
+#: includes/Pro/License.php:222
+msgid "trial — %d day left"
+msgid_plural "trial — %d days left"
+msgstr[0] "пробний період — лишився %d день"
+msgstr[1] "пробний період — лишилось %d дні"
+msgstr[2] "пробний період — лишилось %d днів"
+
+#: includes/Pro/License.php:224
+msgid "trial active"
+msgstr "пробний період активний"
+
+#: includes/Pro/License.php:226
+msgid "active — the Pro features are on"
+msgstr "активна — Pro-функції увімкнено"
+
+#. translators: %s: date and time of the last check.
+#: includes/Pro/License.php:231
+msgid "not valid (last check %s)"
+msgstr "недійсна (остання перевірка %s)"
+
+#: includes/Pro/License.php:243
+msgid "Key not found. Check that it was copied in full, without spaces."
+msgstr "Ключ не знайдено. Перевірте, що його скопійовано повністю, без пробілів."
+
+#: includes/Pro/License.php:244
+msgid "This key no longer works. If this is a mistake, write to support."
+msgstr "Цей ключ більше не діє. Якщо це помилка, напишіть у підтримку."
+
+#: includes/Pro/License.php:245
+msgid "The 7-day trial has ended. Buy a licence on catcode.com.ua to turn the Pro features back on."
+msgstr "7-денний пробний період завершився. Купіть ліцензію на catcode.com.ua, щоб знову увімкнути Pro."
+
+#: includes/Pro/License.php:246
+msgid "This key is already used on another shop. Release it there first."
+msgstr "Цей ключ уже використовується на іншому магазині. Спершу звільніть його там."
+
+#: includes/Pro/License.php:247
+msgid "This key belongs to another CatCode product, not to Ukrposhta Shipping."
+msgstr "Цей ключ від іншого продукту CatCode, не від Укрпошти."
+
+#: includes/Pro/License.php:248
+msgid "Could not reach our licence server. We will retry automatically in a few hours."
+msgstr "Не вдалося зв’язатися з нашим сервером ліцензій. Спробуємо ще раз автоматично за кілька годин."
+
+#: includes/Pro/License.php:249
+msgid "Enter a licence key."
+msgstr "Введіть ключ ліцензії."
+
+#: includes/Pro/License.php:250
+msgid "No key saved yet."
+msgstr "Ключ ще не збережено."
+
+#: includes/Pro/License.php:251
+msgid "Enter a valid e-mail address — the key will be sent there."
+msgstr "Введіть правильну адресу e-mail — ключ прийде туди."
+
+#: includes/Pro/License.php:252
+msgid "A trial has already been issued for this e-mail address."
+msgstr "Для цієї адреси пробний період уже видавався."
+
+#: includes/Pro/License.php:253
+msgid "The trial has already been used on this site — one per install."
+msgstr "На цьому сайті пробний період уже використано — один на встановлення."
+
+#: includes/Pro/License.php:254
+msgid "Too many attempts. Try again in an hour."
+msgstr "Забагато спроб. Спробуйте за годину."
+
+#: includes/Pro/License.php:255
+msgid "The server answered with something we could not read. Try again in a few minutes."
+msgstr "Сервер відповів незрозуміло. Спробуйте за кілька хвилин."
+
+#: includes/Pro/License.php:257
+msgid "This key does not fit."
+msgstr "Цей ключ не підходить."
+
+#: includes/Pro/Shipments.php:46
+msgid "Created, waiting to be handed over"
+msgstr "Створено, чекає на здачу у відділенні"
+
+#: includes/Pro/Shipments.php:47
+msgid "Accepted at the post office"
+msgstr "Прийнято у відділенні"
+
+#: includes/Pro/Shipments.php:48
+msgid "On the way"
+msgstr "У дорозі"
+
+#: includes/Pro/Shipments.php:49
+msgid "Arrived at the post office"
+msgstr "Прибуло у відділення"
+
+#: includes/Pro/Shipments.php:50
+msgid "In storage"
+msgstr "На зберіганні"
+
+#: includes/Pro/Shipments.php:51
+msgid "Not handed over, being forwarded"
+msgstr "Не вручено, переадресація"
+
+#: includes/Pro/Shipments.php:52
+msgid "Delivered"
+msgstr "Вручено"
+
+#: includes/Pro/Shipments.php:53
+msgid "Returned to the sender"
+msgstr "Повернуто відправнику"
+
+#: includes/Pro/Shipments.php:54
+msgid "Acceptance cancelled"
+msgstr "Приймання скасовано"
+
+#: includes/Pro/Shipments.php:55
+msgid "Deleted"
+msgstr "Видалено"
+
+#: includes/Pro/Shipments.php:73
+msgid "Enter the Bearer eCom key."
+msgstr "Введіть ключ Bearer eCom."
+
+#: includes/Pro/Shipments.php:76
+msgid "Enter the counterparty token (user token) from the Ukrposhta contract."
+msgstr "Введіть токен контрагента (user token) з договору з Укрпоштою."
+
+#: includes/Pro/Shipments.php:79
+msgid "Enter the sender post index."
+msgstr "Введіть індекс відправника."
+
+#: includes/Pro/Shipments.php:82
+msgid "Create the sender: fill in the sender details and press \"Create sender\"."
+msgstr "Створіть відправника: заповніть його дані й натисніть «Створити відправника»."
+
+#: includes/Pro/Shipments.php:128
+msgid "Save the Bearer eCom key and the counterparty token first."
+msgstr "Спершу збережіть ключ Bearer eCom і токен контрагента."
+
+#: includes/Pro/Shipments.php:137
+msgid "Fill in the sender post index and phone and save the settings."
+msgstr "Заповніть індекс і телефон відправника та збережіть налаштування."
+
+#: includes/Pro/Shipments.php:145
+msgid "Ukrposhta did not accept the sender address"
+msgstr "Укрпошта не прийняла адресу відправника"
+
+#: includes/Pro/Shipments.php:179
+msgid "Ukrposhta did not create the sender"
+msgstr "Укрпошта не створила відправника"
+
+#. translators: %s: sender uuid.
+#: includes/Pro/Shipments.php:188
+msgid "Sender created: %s"
+msgstr "Відправника створено: %s"
+
+#: includes/Pro/Shipments.php:196
+msgid "Ukrposhta did not answer, try again in a minute."
+msgstr "Укрпошта не відповіла, спробуйте за хвилину."
+
+#. translators: %s: barcode.
+#: includes/Pro/Shipments.php:280 includes/Pro/Shipments.php:314
+msgid "The shipment already exists: %s"
+msgstr "Відправлення вже є: %s"
+
+#: includes/Pro/Shipments.php:305
+msgid "The shipment for this order is being created right now. Reload the page in a few seconds."
+msgstr "Відправлення для цього замовлення саме створюється. Оновіть сторінку за кілька секунд."
+
+#: includes/Pro/Shipments.php:344
+msgid "The customer phone is missing or too short — Ukrposhta needs a mobile number for delivery to a post office."
+msgstr "Телефону покупця немає або він закороткий — для доставки у відділення Укрпошті потрібен мобільний номер."
+
+#: includes/Pro/Shipments.php:347
+msgid "Ukrposhta needs the first and last name of the recipient, at least 2 letters each. Edit the shipping name of the order."
+msgstr "Укрпошті потрібні ім'я і прізвище отримувача, щонайменше по 2 літери. Виправте ім'я в доставці замовлення."
+
+#: includes/Pro/Shipments.php:354
+msgid "Ukrposhta did not accept the recipient post office"
+msgstr "Укрпошта не прийняла відділення отримувача"
+
+#: includes/Pro/Shipments.php:373
+msgid "Ukrposhta did not create the recipient"
+msgstr "Укрпошта не створила отримувача"
+
+#. translators: %s: order number.
+#: includes/Pro/Shipments.php:397
+msgid "Order %s"
+msgstr "Замовлення %s"
+
+#: includes/Pro/Shipments.php:413
+msgid "Ukrposhta did not create the shipment"
+msgstr "Укрпошта не створила відправлення"
+
+#. translators: 1: barcode, 2: cash on delivery amount.
+#: includes/Pro/Shipments.php:427
+msgid "Ukrposhta: shipment %1$s created, cash on delivery %2$s."
+msgstr "Укрпошта: створено відправлення %1$s, післяплата %2$s."
+
+#. translators: %s: barcode.
+#: includes/Pro/Shipments.php:429
+msgid "Ukrposhta: shipment %s created."
+msgstr "Укрпошта: створено відправлення %s."
+
+#. translators: %s: barcode.
+#: includes/Pro/Shipments.php:435
+msgid "Shipment created: %s"
+msgstr "Відправлення створено: %s"
+
+#: includes/Pro/Shipments.php:463
+msgid "Deleting shipments is a Pro feature."
+msgstr "Видалення відправлень — функція Pro."
+
+#: includes/Pro/Shipments.php:471
+msgid "This order has no shipment."
+msgstr "У цього замовлення немає відправлення."
+
+#: includes/Pro/Shipments.php:478
+msgid "The shipment is already accepted at the post office and cannot be deleted."
+msgstr "Відправлення вже прийняте у відділенні, видалити його не можна."
+
+#: includes/Pro/Shipments.php:492
+msgid "Ukrposhta did not delete the shipment"
+msgstr "Укрпошта не видалила відправлення"
+
+#. translators: %s: barcode.
+#: includes/Pro/Shipments.php:500
+msgid "Ukrposhta: shipment %s deleted."
+msgstr "Укрпошта: відправлення %s видалено."
+
+#. translators: %s: barcode.
+#: includes/Pro/Shipments.php:504
+msgid "Shipment %s deleted."
+msgstr "Відправлення %s видалено."
+
+#: includes/Pro/Shipments.php:524
+msgid "Printing labels is a Pro feature."
+msgstr "Друк ярликів — функція Pro."
+
+#: includes/Pro/Shipments.php:537 includes/Pro/Shipments.php:583
+msgid "None of the selected orders has a shipment yet. Create the shipments first."
+msgstr "У жодного з обраних замовлень ще немає відправлення. Спершу створіть відправлення."
+
+#: includes/Pro/Shipments.php:551
+msgid "Ukrposhta did not return the labels"
+msgstr "Укрпошта не повернула ярлики"
+
+#: includes/Pro/Shipments.php:571
+msgid "The form 103a registry is a Pro feature."
+msgstr "Реєстр форми 103а — функція Pro."
+
+#. translators: %s: date and time.
+#: includes/Pro/Shipments.php:602
+msgid "Shop %s"
+msgstr "Магазин %s"
+
+#: includes/Pro/Shipments.php:609
+msgid "Ukrposhta did not create the shipment group"
+msgstr "Укрпошта не створила групу відправлень"
+
+#. translators: %s: order numbers with reasons.
+#: includes/Pro/Shipments.php:627
+msgid "Ukrposhta did not add the shipments to the group: %s"
+msgstr "Укрпошта не додала відправлення до групи: %s"
+
+#: includes/Pro/Shipments.php:635
+msgid "Ukrposhta did not return form 103a"
+msgstr "Укрпошта не повернула форму 103а"
+
+#. translators: 1: barcode, 2: status, 3: post office.
+#: includes/Pro/Shipments.php:718
+msgid "Ukrposhta %1$s: %2$s%3$s"
+msgstr "Укрпошта %1$s: %2$s%3$s"
+
+#: includes/Pro/Shipments.php:728
+msgid "Ukrposhta status:"
+msgstr "Статус Укрпошти:"
+
+#: includes/Shipping/Method.php:23
+msgid "Ukrposhta delivery: the customer picks a post office at checkout (region -> city -> office) and the tariff is quoted live."
+msgstr "Доставка Укрпоштою: вибір відділення в чекауті (область→місто→відділення) та розрахунок тарифу."
+
+#: includes/Shipping/Method.php:42
+msgid "Enable"
+msgstr "Увімкнути"
+
+#: includes/Shipping/Method.php:44
+msgid "Show Ukrposhta at checkout"
+msgstr "Показувати «Укрпошта» в чекауті"
+
+#: includes/Shipping/Method.php:48
+msgid "Method title"
+msgstr "Назва методу"
+
+#: includes/Shipping/Method.php:50
+msgid "Ukrposhta - delivery to a post office"
+msgstr "Укрпошта — доставка у відділення"
+
+#: includes/Shipping/Method.php:53
+msgid "Test environment"
+msgstr "Тестове середовище"
+
+#: includes/Shipping/Method.php:55
+msgid "Sandbox (dev.ukrposhta.ua)"
+msgstr "Sandbox (dev.ukrposhta.ua)"
+
+#: includes/Shipping/Method.php:59
+msgid "Bearer eCom"
+msgstr "Bearer eCom"
+
+#: includes/Shipping/Method.php:61
+msgid "Issued by Ukrposhta once your eCom contract is signed. Needed for both the address classifier and the tariff. Stored encrypted. Leave empty to keep the current key."
+msgstr "Видається Укрпоштою після договору. Потрібен для класифікатора адрес і тарифу. Зберігається зашифровано. Залиште порожнім, щоб не змінювати."
+
+#: includes/Shipping/Method.php:65
+msgid "Sender post index"
+msgstr "Індекс відправника"
+
+#: includes/Shipping/Method.php:67
+msgid "Post index the parcels are sent from. Required for the tariff."
+msgstr "Поштовий індекс складу відправлення — потрібен для тарифу."
+
+#: includes/Shipping/Method.php:71
+msgid "Service type"
+msgstr "Тип послуги"
+
+#: includes/Shipping/Method.php:74
+msgid "Ukrposhta Standard"
+msgstr "Укрпошта Стандарт"
+
+#: includes/Shipping/Method.php:75
+msgid "Ukrposhta Express"
+msgstr "Укрпошта Express"
+
+#: includes/Shipping/Method.php:80
+msgid "Fallback rate, UAH"
+msgstr "Тариф за замовчуванням, грн"
+
+#: includes/Shipping/Method.php:82
+msgid "Used when the API is unreachable or no recipient index has been chosen yet."
+msgstr "Використовується, коли API недоступний або немає індексу отримувача."
+
+#: includes/Shipping/Method.php:86
+msgid "Free shipping from, UAH"
+msgstr "Безкоштовно від суми, грн"
+
+#: includes/Shipping/Method.php:88
+msgid "0 disables it."
+msgstr "0 — вимкнено."
+
+#: includes/Shipping/Method.php:94
+msgid "Send the order total as the declared value"
+msgstr "Передавати суму замовлення як оголошену цінність"
+
+#: includes/Shipping/Method.php:95
+msgid "Ukrposhta charges a percentage for this: the quote gets higher, but the parcel is insured."
+msgstr "Укрпошта бере за це відсоток — тариф у чекауті буде вищим, зате посилка застрахована."
+
+#: includes/Shipping/Method.php:99
+msgid "Cash-on-delivery payment methods"
+msgstr "Способи оплати = післяплата"
+
+#: includes/Shipping/Method.php:101
+msgid "Comma-separated payment method IDs. For these the Ukrposhta cash-on-delivery commission is added to the tariff. The standard WooCommerce method is <code>cod</code>."
+msgstr "ID платіжних методів через кому. Для них у тариф додається комісія Укрпошти за післяплату. Стандартний метод WooCommerce — <code>cod</code>."
+
+#: includes/Shipping/Method.php:105
+msgid "International shipments"
+msgstr "Міжнародні відправлення"
+
+#: includes/Shipping/Method.php:107
+msgid "Quote deliveries outside Ukraine"
+msgstr "Рахувати доставку за межі України"
+
+#: includes/Shipping/Method.php:108
+msgid "The rate is keyed by destination country and weight, no post office is picked. Add this method to a zone that contains the countries you ship to."
+msgstr "Тариф рахується за країною і вагою, відділення не обирається. Додайте цей метод у зону з країнами, куди відправляєте."
+
+#: includes/Shipping/Method.php:112
+msgid "Transport type"
+msgstr "Тип транспорту"
+
+#: includes/Shipping/Method.php:115
+msgid "Air"
+msgstr "Авіа"
+
+#: includes/Shipping/Method.php:116
+msgid "Ground"
+msgstr "Наземний"
+
+#: includes/Shipping/Method.php:121
+msgid "Package type"
+msgstr "Тип відправлення"
+
+#: includes/Shipping/Method.php:132
+msgid "Not every type is available for every country: an unavailable combination is reported by Ukrposhta and the method is then not offered."
+msgstr "Не кожен тип доступний для кожної країни: про недоступне поєднання повідомляє Укрпошта, і тоді метод не показується."
+
+#: includes/Shipping/Method.php:136
+msgid "Content category"
+msgstr "Категорія вмісту"
+
+#: includes/Shipping/Method.php:149
+msgid "Tariff currency"
+msgstr "Валюта тарифу"
+
+#: includes/Shipping/Method.php:155
+msgid "Some destinations (the US among them) are only quoted in USD."
+msgstr "Для деяких країн (зокрема США) тариф дається лише в USD."
+
+#: includes/Shipping/Method.php:159
+msgid "International fallback rate, UAH"
+msgstr "Запасний міжнародний тариф, грн"
+
+#: includes/Shipping/Method.php:161
+msgid "Leave empty so a failed quote hides the method instead of inventing a price. The reason is written to WooCommerce - Status - Logs."
+msgstr "Залиште порожнім: тоді невдалий розрахунок ховає метод, а не вигадує ціну. Причина пишеться в WooCommerce → Статус → Журнали."
+
+#: includes/Shipping/Method.php:165
+msgid "Widget accent colour"
+msgstr "Акцентний колір віджета"
+
+#: includes/Shipping/Method.php:386
+msgid "international"
+msgstr "за кордон"
+
+#: ukrposhta-shipping-for-woocommerce.php:49
 msgid "The Pro version of Ukrposhta Shipping is paused: the free copy \"CatCode Shipping with Ukrposhta for WooCommerce\" from WordPress.org is active and uses the same classes. Deactivate it and Pro takes over from the next page load. The settings stay. Deactivate the free copy, do not delete it: deleting it removes the shared settings and post office table."
 msgstr "Pro-версія Укрпошти на паузі: активна безкоштовна копія «CatCode Shipping with Ukrposhta for WooCommerce» з WordPress.org з тими самими класами. Деактивуйте її — з наступного завантаження працюватиме Pro. Налаштування збережуться. Не видаляйте безкоштовну копію, лише деактивуйте: її видалення стирає спільні налаштування і таблицю відділень."
+
+#: ukrposhta-shipping-for-woocommerce.php:129
+msgid "Ukrposhta Shipping for WooCommerce requires an active WooCommerce installation."
+msgstr "Для роботи плагіна потрібен активний WooCommerce."

@@ -1,3 +1,5 @@
 wporg/__pycache__/
 wporg/catcode-shipping-with-ukrposhta-for-woocommerce/
 wporg/*.zip
+tools/__pycache__/
+*.zip

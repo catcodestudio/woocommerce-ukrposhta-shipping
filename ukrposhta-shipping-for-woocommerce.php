@@ -2,8 +2,9 @@
 /**
  * Plugin Name: Ukrposhta Shipping for WooCommerce
  * Plugin URI: https://catcode.com.ua/modules/ukrposhta-shipping-for-woocommerce/
- * Description: Ukrposhta delivery for WooCommerce: the customer picks region, city and post office at checkout from the official Address Classifier, and the delivery price is quoted live. Shipment (barcode) creation and sticker printing come in a later update.
- * Version: 1.2.9
+ * Update URI: https://catcode.com.ua/modules/ukrposhta-shipping-for-woocommerce/
+ * Description: Ukrposhta delivery for WooCommerce: the customer picks region, city and post office at checkout from the official Address Classifier, and the delivery price is quoted live. Pro: shipments with cash on delivery, labels, form 103a and delivery statuses.
+ * Version: 1.3.0
  * Requires at least: 5.6
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
@@ -52,7 +53,7 @@ if ( defined( 'UPWC_FILE' ) && __FILE__ !== UPWC_FILE ) {
 	return;
 }
 
-define( 'UPWC_VERSION', '1.2.9' );
+define( 'UPWC_VERSION', '1.3.0' );
 define( 'UPWC_FILE', __FILE__ );
 define( 'UPWC_DIR', plugin_dir_path( __FILE__ ) );
 define( 'UPWC_URL', plugin_dir_url( __FILE__ ) );
@@ -71,6 +72,39 @@ spl_autoload_register(
 		}
 	}
 );
+
+// @pro-begin
+/*
+ * This build is sold on catcode.com.ua and shares its settings with the free copy on
+ * wordpress.org. The Update URI header keeps wordpress.org from offering that copy as
+ * an "update"; the filter below drops such an offer if it still arrives, because
+ * installing it would silently replace Pro with the free version.
+ */
+add_filter(
+	'site_transient_update_plugins',
+	static function ( $value ) {
+		$file = plugin_basename( __FILE__ );
+		if ( is_object( $value ) && isset( $value->response[ $file ]->package ) && false !== strpos( (string) $value->response[ $file ]->package, 'downloads.wordpress.org' ) ) {
+			unset( $value->response[ $file ] );
+		}
+		return $value;
+	}
+);
+
+// New versions come from catcode.com.ua (the Update URI above points WordPress
+// there); the licence key goes with the request.
+require_once UPWC_DIR . 'includes/Pro/class-upwc-updater.php';
+UPWC_Updater::init(
+	array(
+		'file' => __FILE__,
+		'slug' => \CatCode\UkrposhtaWC\Pro\License::EXPECTED_SLUG,
+		'key'  => static function () {
+			return \CatCode\UkrposhtaWC\Pro\License::key();
+		},
+	)
+);
+register_deactivation_hook( __FILE__, array( '\\CatCode\\UkrposhtaWC\\Pro\\Boot', 'unschedule' ) );
+// @pro-end
 
 register_activation_hook( __FILE__, array( '\\CatCode\\UkrposhtaWC\\Core\\Installer', 'activate' ) );
 register_deactivation_hook( __FILE__, array( '\\CatCode\\UkrposhtaWC\\Core\\Installer', 'deactivate' ) );
@@ -98,5 +132,8 @@ add_action(
 			return;
 		}
 		\CatCode\UkrposhtaWC\Core\Plugin::instance()->boot();
+		// @pro-begin
+		\CatCode\UkrposhtaWC\Pro\Boot::init();
+		// @pro-end
 	}
 );

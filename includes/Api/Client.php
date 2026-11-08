@@ -38,6 +38,10 @@ class Client {
 		$this->sandbox         = $sandbox;
 
 		$root             = $sandbox ? 'https://dev.ukrposhta.ua' : 'https://www.ukrposhta.ua';
+		// Local test stand only: the API answered by a mock.
+		if ( defined( 'UPWC_API_ROOT' ) && '' !== (string) constant( 'UPWC_API_ROOT' ) ) {
+			$root = rtrim( (string) constant( 'UPWC_API_ROOT' ), '/' );
+		}
 		$this->ecom       = $root . '/ecom/0.0.1';
 		$this->forms      = $root . '/forms/ecom/0.0.1';
 		$this->classifier = $root . '/address-classifier-ws';

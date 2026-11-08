@@ -21,6 +21,17 @@ class Settings {
 	 * eCom Bearer (Address Classifier + tariff both authorize with it). */
 	public const SECRET_FIELDS = array( 'bearer' );
 
+	/**
+	 * Secret fields, extendable: an add-on that keeps more API keys in these
+	 * settings registers them here so they are encrypted the same way.
+	 *
+	 * @return string[]
+	 */
+	public static function secret_fields(): array {
+		$fields = apply_filters( 'upwc_secret_fields', self::SECRET_FIELDS );
+		return is_array( $fields ) ? array_values( array_unique( array_map( 'strval', $fields ) ) ) : self::SECRET_FIELDS;
+	}
+
 	public static function all(): array {
 		$opt = get_option( self::OPTION, array() );
 		return is_array( $opt ) ? $opt : array();

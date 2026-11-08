@@ -167,6 +167,22 @@ class Method extends \WC_Shipping_Method {
 				'default' => '#374151',
 			),
 		);
+
+		/**
+		 * Extra settings fields (the same shared option keeps them).
+		 *
+		 * @param array $fields Form fields.
+		 */
+		$extra = apply_filters( 'upwc_form_fields', $this->form_fields );
+		if ( is_array( $extra ) ) {
+			$this->form_fields = $extra;
+		}
+	}
+
+	/** Settings screen; add-ons can print their own panel above the form. */
+	public function admin_options() {
+		do_action( 'upwc_settings_before', $this );
+		parent::admin_options();
 	}
 
 	/**
@@ -180,7 +196,7 @@ class Method extends \WC_Shipping_Method {
 
 	/** Never render stored secrets back into the form. */
 	public function get_option( $key, $empty_value = null ) {
-		if ( in_array( $key, Settings::SECRET_FIELDS, true ) ) {
+		if ( in_array( $key, Settings::secret_fields(), true ) ) {
 			return '';
 		}
 		return parent::get_option( $key, $empty_value );
@@ -194,7 +210,7 @@ class Method extends \WC_Shipping_Method {
 		$prev = is_array( $prev ) ? $prev : array();
 
 		$posted = array();
-		foreach ( Settings::SECRET_FIELDS as $field ) {
+		foreach ( Settings::secret_fields() as $field ) {
 			$field_key       = $this->get_field_key( $field );
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verifies the settings nonce before calling this.
 			$posted[ $field ] = isset( $_POST[ $field_key ] ) ? trim( sanitize_text_field( wp_unslash( $_POST[ $field_key ] ) ) ) : '';
@@ -204,7 +220,7 @@ class Method extends \WC_Shipping_Method {
 
 		$opt = get_option( $this->get_option_key(), array() );
 		$opt = is_array( $opt ) ? $opt : array();
-		foreach ( Settings::SECRET_FIELDS as $field ) {
+		foreach ( Settings::secret_fields() as $field ) {
 			if ( '' === $posted[ $field ] ) {
 				// Keep the previously stored (already-encrypted) value.
 				$opt[ $field ] = $prev[ $field ] ?? '';
