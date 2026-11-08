@@ -12,7 +12,7 @@ global $wpdb;
 
 $upwc_table = $wpdb->prefix . 'upwc_offices';
 // Table names cannot be bound as placeholders; the name is built from $wpdb->prefix.
-// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
+// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, PluginCheck.Security.DirectDB.UnescapedDBParameter
 $wpdb->query( "DROP TABLE IF EXISTS {$upwc_table}" );
 
 delete_option( 'upwc_version' );
