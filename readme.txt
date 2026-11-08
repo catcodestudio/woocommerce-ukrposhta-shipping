@@ -20,7 +20,6 @@ Ukrposhta Shipping for WooCommerce integrates the official Ukrposhta (Укрпо
 
 To fetch the address classifier and the tariff you need a Ukrposhta eCom **Bearer** (issued by your Ukrposhta manager after signing the eCom contract). Enter it under **WooCommerce → Settings → Shipping → Ukrposhta**.
 
-<!-- @pro-begin -->
 **Pro** (licence from catcode.com.ua, 7-day trial in the settings):
 
 * Shipment (barcode) from the order in one click — recipient, post office, weight, declared value.
@@ -33,7 +32,6 @@ To fetch the address classifier and the tariff you need a Ukrposhta eCom **Beare
 * Delete a shipment before it is handed over.
 
 For shipments Ukrposhta issues a counterparty token together with the Bearer key under the eCom contract.
-<!-- @pro-end -->
 
 Ukrposhta is a third-party service. This plugin is an independent integration built by CatCode; it is not affiliated with, endorsed by or sponsored by Ukrposhta.
 
@@ -64,13 +62,11 @@ https://dev.ukrposhta.ua when the Sandbox option is enabled).
 * Terms of service: https://www.ukrposhta.ua/ua/informatsiia-pro-poslugu
 * Privacy policy: https://www.ukrposhta.ua/ua/polityka-konfidentsiinosti
 
-<!-- @pro-begin -->
 * Pro, when you create a shipment: the recipient name, phone, e-mail and post office
   index of that order, its weight, declared value and cash on delivery amount, and the
   sender details from the settings. Status checks send the barcodes of open shipments.
 * Pro licence: the licence key and the shop address go to catcode.com.ua
   (https://catcode.com.ua/wp-json/catcode/v1/license) to check the key, once a day.
-<!-- @pro-end -->
 
 Using this plugin therefore means the store agrees to Ukrposhta's terms; the key
 is issued by Ukrposhta after an eCom contract is signed.
@@ -87,10 +83,8 @@ The office picker targets the classic checkout. Order meta is also captured on t
 
 = 1.3.0 =
 * Settings: the method settings screen now has extension points for add-ons (extra fields, encrypted keys, a panel above the form).
-<!-- @pro-begin -->
 * Pro: shipments from the order with cash on delivery, labels 100x100 / A4 / A5, bulk actions, form 103a registry, delivery statuses with the order completed on delivery, tracking number for the customer, deleting a shipment before hand-over.
 * Pro: new versions appear in Dashboard → Updates for an active licence.
-<!-- @pro-end -->
 
 = 1.2.9 =
 * Removed the extra line with the chosen post office under the fields: the city and post office are already visible in the fields.

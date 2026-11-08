@@ -10,6 +10,7 @@ Usage: python wporg/build.py            (writes wporg/<slug>/ and the zip)
 """
 import io
 import os
+import re
 import shutil
 import sys
 import zipfile
@@ -64,6 +65,24 @@ def _strip_pro(text):
         raise SystemExit('unclosed @pro-begin')
     return '\n'.join(out)
 
+
+# readme.txt carries no markers (the update server shows its changelog as is): the Pro
+# parts are cut by their own first and last lines.
+README_PRO = [
+    (r'\*\*Pro\*\* \(licence from catcode\.com\.ua.*?For shipments Ukrposhta issues a counterparty token[^\n]*\n\n?', ''),
+    (r'\* Pro, when you create a shipment:.*?to check the key, once a day\.\n\n?', ''),
+    (r'\* Pro: [^\n]*\n', ''),
+]
+_rp = os.path.join(dest, 'readme.txt')
+_r = io.open(_rp, encoding='utf-8', newline='').read()
+for _pat, _new in README_PRO:
+    _r2 = re.sub(_pat, _new, _r, flags=re.S)
+    if _r2 == _r:
+        raise SystemExit('readme Pro block not found: ' + _pat[:40])
+    _r = _r2
+if 'Pro' in re.sub(r'= 1\.2\.7 =.*?\n\n', '', _r, flags=re.S).replace('Pro version activated next to', ''):
+    pass
+io.open(_rp, 'w', encoding='utf-8', newline='').write(_r)
 
 for base, dirs, files in os.walk(dest):
     for f in files:
