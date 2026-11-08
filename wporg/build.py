@@ -98,6 +98,7 @@ for base, dirs, files in os.walk(dest):
         o = s
         s = s.replace(KEEP, GUARD)
         s = s.replace(SHOP_NAME, ORG_NAME).replace(SHOP_SLUG, ORG_SLUG)
+        s = s.replace(' Pro: shipments with cash on delivery, labels, form 103a and delivery statuses.', '')
         s = s.replace(GUARD, KEEP)
         if s != o:
             io.open(p, 'w', encoding='utf-8', newline='').write(s)
@@ -224,10 +225,19 @@ for f in sorted(os.listdir(langs)):
 # the compiled catalogue stores the domain in its header; rebuild it from the .po
 sys.path.insert(0, HERE)
 
+# wordpress.org ships translations from translate.wordpress.org: only the .pot goes into
+# the package, and only with the strings of the code that is actually in it (no Pro).
 for f in sorted(os.listdir(langs)):
-    if f.endswith('.po'):
-        po = os.path.join(langs, f)
-        polib.pofile(po).save_as_mofile(po[:-3] + '.mo')
+    p = os.path.join(langs, f)
+    if f.endswith(('.po', '.mo')):
+        os.remove(p)
+    elif f.endswith('.pot'):
+        cat = polib.pofile(p, wrapwidth=0)
+        for e in list(cat):
+            files = [o[0] for o in e.occurrences]
+            if files and not any(os.path.exists(os.path.join(dest, fn)) for fn in files):
+                cat.remove(e)
+        io.open(p, 'w', encoding='utf-8', newline='\n').write(str(cat) + '\n')
 
 version = ''
 main = io.open(os.path.join(dest, ORG_SLUG + '.php'), encoding='utf-8').read()
