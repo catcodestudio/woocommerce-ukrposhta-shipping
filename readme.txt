@@ -2,7 +2,7 @@
 Contributors: catcodestudio
 Tags: woocommerce, shipping, ukrposhta, ukraine, delivery
 Requires at least: 5.6
-Tested up to: 7.1
+Tested up to: 7.2
 Requires PHP: 7.4
 Stable tag: 1.3.1
 License: GPLv2 or later
