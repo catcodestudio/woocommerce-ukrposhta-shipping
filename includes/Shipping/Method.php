@@ -8,6 +8,7 @@
 
 namespace CatCode\UkrposhtaWC\Shipping;
 
+use CatCode\UkrposhtaWC\Api\Cache;
 use CatCode\UkrposhtaWC\Api\Client;
 use CatCode\UkrposhtaWC\Core\Crypto;
 use CatCode\UkrposhtaWC\Core\Settings;
@@ -217,6 +218,7 @@ class Method extends \WC_Shipping_Method {
 		}
 
 		$result = parent::process_admin_options();
+		delete_transient( 'upwc_regions_fail' ); // a new Bearer is tried at once
 
 		$opt = get_option( $this->get_option_key(), array() );
 		$opt = is_array( $opt ) ? $opt : array();
@@ -249,6 +251,23 @@ class Method extends \WC_Shipping_Method {
 		}
 		$ids = array_filter( array_map( 'trim', explode( ',', (string) $this->get_option( 'cod_gateways', 'cod' ) ) ) );
 		return in_array( $chosen, $ids, true );
+	}
+
+	/**
+	 * Within Ukraine the buyer must pick a region, city and post office from the
+	 * Ukrposhta classifier. Without a working eCom Bearer that list is empty and
+	 * the order could never be placed, so the method is hidden instead.
+	 */
+	public function is_available( $package ) {
+		if ( ! parent::is_available( $package ) ) {
+			return false;
+		}
+		$country = strtoupper( (string) ( $package['destination']['country'] ?? '' ) );
+		if ( '' !== $country && 'UA' !== $country ) {
+			return true;
+		}
+		$client = Settings::client();
+		return $client && Cache::regions( $client );
 	}
 
 	public function calculate_shipping( $package = array() ) {

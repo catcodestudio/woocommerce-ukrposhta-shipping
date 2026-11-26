@@ -4,7 +4,7 @@
  * Plugin URI: https://catcode.com.ua/modules/ukrposhta-shipping-for-woocommerce/
  * Update URI: https://catcode.com.ua/modules/ukrposhta-shipping-for-woocommerce/
  * Description: Ukrposhta delivery for WooCommerce: the customer picks region, city and post office at checkout from the official Address Classifier, and the delivery price is quoted live. Pro: shipments with cash on delivery, labels, form 103a and delivery statuses.
- * Version: 1.3.0
+ * Version: 1.3.1
  * Requires at least: 5.6
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
@@ -53,7 +53,7 @@ if ( defined( 'UPWC_FILE' ) && __FILE__ !== UPWC_FILE ) {
 	return;
 }
 
-define( 'UPWC_VERSION', '1.3.0' );
+define( 'UPWC_VERSION', '1.3.1' );
 define( 'UPWC_FILE', __FILE__ );
 define( 'UPWC_DIR', plugin_dir_path( __FILE__ ) );
 define( 'UPWC_URL', plugin_dir_url( __FILE__ ) );

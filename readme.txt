@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, ukrposhta, ukraine, delivery
 Requires at least: 5.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,9 @@ Yes. The Address Classifier and tariff both require a Bearer issued by Ukrposhta
 The office picker targets the classic checkout. Order meta is also captured on the Store API (block) checkout path.
 
 == Changelog ==
+
+= 1.3.1 =
+* Fixed: Without a working eCom Bearer (none set or rejected by Ukrposhta) the method is no longer offered within Ukraine: the buyer could not pick a post office and got stuck at checkout. It comes back by itself once the Bearer works.
 
 = 1.3.0 =
 * Settings: the method settings screen now has extension points for add-ons (extra fields, encrypted keys, a panel above the form).

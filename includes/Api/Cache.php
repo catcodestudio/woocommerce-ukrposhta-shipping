@@ -22,6 +22,11 @@ class Cache {
 		if ( is_array( $cached ) && $cached ) {
 			return $cached;
 		}
+		// A failed lookup (no or rejected Bearer) is remembered for 10 minutes,
+		// so the availability check does not hit Ukrposhta on every cart refresh.
+		if ( get_transient( 'upwc_regions_fail' ) ) {
+			return array();
+		}
 		$out = array();
 		foreach ( Client::entries( $client->get_regions( '' ) ) as $e ) {
 			$id   = (string) ( $e['REGION_ID'] ?? '' );
@@ -37,6 +42,9 @@ class Cache {
 		usort( $out, static fn( $a, $b ) => strcmp( $a['name'], $b['name'] ) );
 		if ( $out ) {
 			set_transient( $key, $out, WEEK_IN_SECONDS );
+			delete_transient( 'upwc_regions_fail' );
+		} else {
+			set_transient( 'upwc_regions_fail', 1, 10 * MINUTE_IN_SECONDS );
 		}
 		return $out;
 	}
